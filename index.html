@@ -1,1507 +1,2056 @@
 ```html
 <!DOCTYPE html>
-<html lang="fr" class="dark">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PuffZone 64 | Boutique Officielle</title>
-    <!-- Chargement de Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Police Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Icônes FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            500: '#8b5cf6',
-                            600: '#7c3aed',
-                            neon: '#06b6d4'
-                        }
-                    }
-                }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PuffZone 64 — Boutique Officielle &amp; Click &amp; Collect</title>
+    <style>
+        /* ==========================================================================
+           1. VARIABLES & RESET CSS 100% AUTONOME (ZÉRO DÉPENDANCE EXTERNE)
+           ========================================================================== */
+        :root {
+            --bg-main: #0b1120;
+            --bg-card: #111827;
+            --bg-card-hover: #172033;
+            --bg-input: #080d1a;
+            --border-color: #1e293b;
+            --border-focus: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --accent-cyan: #38bdf8;
+            --accent-violet: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.55);
+            --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.88);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        img, svg {
+            max-width: 100%;
+            display: block;
+        }
+
+        button, input, select, textarea {
+            font-family: inherit;
+            color: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: transform 0.16s ease, opacity 0.16s ease, border-color 0.16s ease;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ==========================================================================
+           2. EN-TÊTE FIXE & LOGO SÉCURISÉ
+           ========================================================================== */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(11, 17, 32, 0.94);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 16px;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .logo-wrapper {
+            width: 42px;
+            height: 46px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, #0f172a, #1e1b4b);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.16);
+        }
+
+        .brand-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            line-height: 1.15;
+        }
+
+        .brand-title span {
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .save-badge {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .save-badge.visible {
+            display: inline-flex;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-nav {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 9px 13px;
+            border-radius: var(--radius-md);
+            font-size: 0.82rem;
+            font-weight: 600;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-nav:hover {
+            border-color: var(--accent-cyan);
+            background: var(--bg-card-hover);
+        }
+
+        .btn-nav-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+            color: #06101f;
+            border: none;
+            font-weight: 700;
+        }
+
+        /* BOUTON BOÎTE ADMIN STRICTEMENT MASQUÉ PAR DÉFAUT */
+        .btn-nav-admin {
+            display: none !important;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            color: #fbbf24;
+        }
+
+        .btn-nav-admin.admin-authenticated {
+            display: inline-flex !important;
+        }
+
+        .badge-count {
+            background: var(--danger);
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 999px;
+            min-width: 19px;
+            text-align: center;
+        }
+
+        .badge-count-dark {
+            background: #06101f;
+            color: var(--accent-cyan);
+        }
+
+        /* ==========================================================================
+           3. CONTENEUR PRINCIPAL, BANNIÈRE & FILTRES
+           ========================================================================== */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 16px 80px;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #131c36 55%, #161b3a 100%);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 22px 20px;
+            margin-bottom: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .hero-tag {
+            display: inline-block;
+            width: fit-content;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent-cyan);
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .hero-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.25;
+            color: #ffffff;
+        }
+
+        .hero-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: 680px;
+        }
+
+        .pickup-pills {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            padding-top: 4px;
+        }
+
+        .pickup-pill {
+            font-size: 0.76rem;
+            font-weight: 600;
+            padding: 5px 11px;
+            border-radius: 999px;
+            background: rgba(11, 17, 32, 0.9);
+            border: 1px solid var(--border-color);
+            color: #cbd5e1;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            flex: 1 1 260px;
+        }
+
+        .input-field {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 11px 14px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: var(--border-focus);
+        }
+
+        .user-status-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 9px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        /* ==========================================================================
+           4. GRILLE DES PRODUITS (PUFFS)
+           ========================================================================== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(56, 189, 248, 0.45);
+        }
+
+        .product-img-wrap {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: #080d1a;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .product-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 999px;
+            backdrop-filter: blur(6px);
+        }
+
+        .stock-ok {
+            background: rgba(16, 185, 129, 0.22);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+        }
+
+        .stock-low {
+            background: rgba(245, 158, 11, 0.22);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+        }
+
+        .stock-out {
+            background: rgba(239, 68, 68, 0.25);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+        }
+
+        .product-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 8px;
+        }
+
+        .product-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .product-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            flex: 1;
+        }
+
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+        }
+
+        .btn-add-cart {
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            font-size: 0.84rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+            color: #06101f;
+        }
+
+        .btn-add-cart:disabled {
+            background: #1e293b;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        /* ==========================================================================
+           5. MODALES & OVERLAYS (MASQUÉES PAR DÉFAUT)
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(3, 7, 18, 0.86);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 22px;
+            box-shadow: var(--shadow-modal);
+            position: relative;
+        }
+
+        .modal-card.modal-wide {
+            max-width: 880px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .btn-close {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: #1e293b;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.92rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+            color: #06101f;
+            margin-top: 6px;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            font-size: 0.84rem;
+            font-weight: 600;
+            background: #1e293b;
+            color: #e2e8f0;
+            margin-top: 8px;
+        }
+
+        .pw-rules {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 0.76rem;
+        }
+
+        .pw-rule {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--text-dim);
+        }
+
+        .pw-rule.valid {
+            color: #34d399;
+            font-weight: 600;
+        }
+
+        .pw-rule.invalid {
+            color: #f87171;
+        }
+
+        /* ==========================================================================
+           6. PANNEAU ADMINISTRATEUR & BOÎTE DE RÉCEPTION
+           ========================================================================== */
+        .admin-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-tab {
+            padding: 9px 14px;
+            border-radius: var(--radius-md);
+            font-size: 0.82rem;
+            font-weight: 700;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .admin-tab.active {
+            background: rgba(56, 189, 248, 0.16);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .inbox-item {
+            background: var(--bg-input);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .inbox-item.sent {
+            border-color: rgba(56, 189, 248, 0.45);
+        }
+
+        .code-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #050811;
+            border: 1px solid rgba(245, 158, 11, 0.55);
+            padding: 8px 14px;
+            border-radius: var(--radius-md);
+        }
+
+        .code-digits {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            color: #fbbf24;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-sm {
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+
+        .btn-cyan {
+            background: var(--accent-cyan);
+            color: #06101f;
+        }
+
+        .btn-violet {
+            background: var(--accent-violet);
+            color: #06101f;
+        }
+
+        .btn-green {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            color: #34d399;
+        }
+
+        .btn-red {
+            background: rgba(239, 68, 68, 0.18);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #f87171;
+        }
+
+        .btn-dark {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        .admin-list-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+
+        .admin-form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 18px;
+        }
+
+        /* ==========================================================================
+           7. PANIER & NOTIFICATIONS TOAST
+           ========================================================================== */
+        .cart-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .qty-controls {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 4px 8px;
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 92%;
+            max-width: 420px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: #0f172a;
+            color: #ffffff;
+            border: 1px solid var(--accent-cyan);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.84rem;
+            font-weight: 600;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75);
+            text-align: center;
+        }
+
+        .toast.error {
+            border-color: var(--danger);
+            background: #1f0d12;
+            color: #fecaca;
+        }
+
+        .toast.success {
+            border-color: var(--success);
+            background: #091e18;
+            color: #a7f3d0;
+        }
+
+        .info-alert {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            font-size: 0.8rem;
+            color: #e0f2fe;
+            margin-bottom: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .hero-title {
+                font-size: 1.25rem;
+            }
+            .btn-nav {
+                padding: 8px 10px;
+                font-size: 0.78rem;
+            }
+            .modal-card {
+                padding: 16px;
             }
         }
-    </script>
-    <style>
-        body {
-            background-color: #09090b;
-            color: #f4f4f5;
-        }
-        .glass-panel {
-            background: rgba(24, 24, 27, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .neon-glow {
-            box-shadow: 0 0 25px rgba(139, 92, 246, 0.22);
-        }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #09090b; }
-        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-violet-500 selection:text-white">
+<body>
 
-    <!-- Zone de notifications (Toasts) -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
-
-    <!-- Barre de navigation -->
-    <header class="sticky top-0 z-40 glass-panel border-b border-zinc-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
-            <!-- Logo & Indicateur de sauvegarde -->
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="showSection('shop')">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-violet-500/20 shrink-0">
-                        <i class="fa-solid fa-cloud-bolt text-white text-lg"></i>
-                    </div>
-                    <div>
-                        <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">PuffZone</span>
-                        <span class="text-[11px] block text-cyan-400 font-medium -mt-1">Click & Collect 64</span>
-                    </div>
+    <!-- ======================================================================
+         EN-TÊTE PRINCIPAL (LOGO DIMENSIONS FIXÉES + NAVIGATION SÉCURISÉE)
+         ====================================================================== -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="brand-group" onclick="closeAllModals()">
+                <div class="logo-wrapper">
+                    <svg width="32" height="36" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:36px;flex-shrink:0;">
+                        <defs>
+                            <linearGradient id="pzShield" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#38bdf8"/>
+                                <stop offset="100%" stop-color="#818cf8"/>
+                            </linearGradient>
+                            <linearGradient id="pzVapor" x1="20" y1="8" x2="52" y2="28" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#38bdf8"/>
+                                <stop offset="100%" stop-color="#c084fc"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M32 5L52 15V33C52 45.5 43.5 54.5 32 59C20.5 54.5 12 45.5 12 33V15L32 5Z" fill="#090d1e" stroke="url(#pzShield)" stroke-width="3.4"/>
+                        <path d="M21 34L32 28L43 34V45L32 51L21 45V34Z" fill="#1d4ed8" fill-opacity="0.7" stroke="#60a5fa" stroke-width="1.8"/>
+                        <rect x="17" y="25" width="22" height="6.5" rx="3" transform="rotate(-38 17 25)" fill="url(#pzShield)" stroke="#e0f2fe" stroke-width="1.2"/>
+                        <path d="M35 17C38 12 45 11 48 15C50 18 46 21 43 20" stroke="url(#pzVapor)" stroke-width="2.6" stroke-linecap="round"/>
+                        <text x="38" y="31" fill="#38bdf8" font-family="sans-serif" font-weight="800" font-size="11">64</text>
+                    </svg>
                 </div>
-
-                <!-- Badge d'état de sauvegarde en temps réel -->
-                <div id="sync-status-badge" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all">
-                    <i class="fa-solid fa-cloud-check"></i>
-                    <span id="sync-status-text">Sauvegardé ✓</span>
+                <div>
+                    <div class="brand-title">PuffZone <span>64</span></div>
+                    <div class="brand-sub">
+                        Click &amp; Collect
+                        <span id="save-status-badge" class="save-badge">Sauvegardé ✓</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Navigation & Actions -->
-            <nav class="flex items-center gap-2 sm:gap-3">
-                <button onclick="showSection('shop')" class="px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800/60 transition">
-                    <i class="fa-solid fa-store mr-1.5 text-violet-400"></i><span class="hidden sm:inline">Boutique</span>
+            <div class="header-actions">
+                <!-- STRICTEMENT INVISIBLE SAUF SI L'ADMIN ENEKO640@OUTLOOK.FR EST CONNECTÉ -->
+                <button type="button" id="header-admin-btn" class="btn-nav btn-nav-admin" onclick="openAdminModal()">
+                    📥 Boîte Admin
+                    <span id="header-inbox-badge" class="badge-count hidden">0</span>
                 </button>
 
-                <!-- Bouton Admin (Visible uniquement si connecté en tant qu'admin) -->
-                <button id="nav-admin-btn" onclick="showSection('admin')" class="hidden px-3 py-2 rounded-xl text-sm font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 transition relative">
-                    <i class="fa-solid fa-shield-halved mr-1.5"></i>Admin
-                    <span id="admin-badge-count" class="hidden absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                <button type="button" class="btn-nav" id="header-account-btn" onclick="handleAccountButtonClick()">
+                    👤 Connexion / Créer
                 </button>
 
-                <!-- Panier -->
-                <button onclick="toggleCartModal()" class="relative p-2.5 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 transition">
-                    <i class="fa-solid fa-bag-shopping text-lg"></i>
-                    <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-violet-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+                <button type="button" class="btn-nav btn-nav-primary" onclick="openCartModal()">
+                    🛒 Panier
+                    <span id="header-cart-badge" class="badge-count badge-count-dark">0</span>
                 </button>
-
-                <!-- Compte / Connexion -->
-                <div id="auth-nav-area">
-                    <button onclick="openAuthModal('login')" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-md shadow-violet-600/20 transition">
-                        <i class="fa-solid fa-user mr-1.5"></i>Connexion
-                    </button>
-                </div>
-            </nav>
+            </div>
         </div>
     </header>
 
-    <!-- Contenu Principal -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-        <!-- SECTION BOUTIQUE -->
-        <section id="section-shop" class="space-y-8">
-            <!-- Bannière Hero -->
-            <div class="relative overflow-hidden rounded-3xl glass-panel p-6 sm:p-10 neon-glow">
-                <div class="relative z-10 max-w-2xl">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-4">
-                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span> Réservation en ligne & Retrait local
-                    </span>
-                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
-                        Les meilleures <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Puffs & Saveurs</span> près de chez vous.
-                    </h1>
-                    <p class="text-zinc-400 text-sm sm:text-base mb-6 leading-relaxed">
-                        Commandez vos modèles préférés en temps réel et choisissez votre point de remise en main propre parmi nos villes, villages et adresses disponibles.
-                    </p>
-                    <div class="flex flex-wrap gap-3 text-xs text-zinc-400">
-                        <span class="bg-zinc-900/90 px-3 py-1.5 rounded-lg border border-zinc-800"><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Stocks synchronisés</span>
-                        <span class="bg-zinc-900/90 px-3 py-1.5 rounded-lg border border-zinc-800"><i class="fa-solid fa-location-dot text-violet-400 mr-1.5"></i>Lieux de retrait flexibles</span>
-                        <span class="bg-zinc-900/90 px-3 py-1.5 rounded-lg border border-zinc-800"><i class="fa-solid fa-lock text-cyan-400 mr-1.5"></i>Comptes vérifiés</span>
-                    </div>
-                </div>
-                <div class="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 opacity-20 pointer-events-none">
-                    <i class="fa-solid fa-wind text-[180px] text-violet-500"></i>
-                </div>
-            </div>
-
-            <!-- Liste des lieux de retrait disponibles -->
-            <div class="glass-panel rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-2.5 text-sm">
-                    <div class="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                    </div>
-                    <div>
-                        <span class="font-semibold text-zinc-200">Lieux de retrait actifs :</span>
-                        <span id="shop-locations-preview" class="text-zinc-400 ml-1">Chargement...</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Grille des Produits -->
+    <!-- ======================================================================
+         CONTENU PRINCIPAL : CATALOGUE DE PUFFS & POINTS DE RETRAIT
+         ====================================================================== -->
+    <main class="main-container">
+        <section class="hero-banner">
+            <span class="hero-tag">Boutique Officielle • Retrait Local 64</span>
+            <h1 class="hero-title">Vos Puffs préférées en stock immédiat</h1>
+            <p class="hero-desc">
+                Créez votre compte sécurisé, choisissez vos saveurs et sélectionnez votre point de retrait parmi nos villes et villages disponibles.
+            </p>
             <div>
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-fire text-orange-500"></i> Catalogue Disponible
-                    </h2>
-                    <span id="products-total-label" class="text-sm text-zinc-400">0 produit</span>
-                </div>
-
-                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    <!-- Injecté par JS -->
-                </div>
+                <div style="font-size:0.75rem;color:#94a3b8;font-weight:700;margin-bottom:6px;">📍 Lieux de retrait disponibles :</div>
+                <div id="hero-locations-list" class="pickup-pills"></div>
             </div>
         </section>
 
-        <!-- SECTION ADMINISTRATEUR (eneko640@outlook.fr) -->
-        <section id="section-admin" class="hidden space-y-8">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-2">
-                        <i class="fa-solid fa-crown"></i> Panneau Administrateur (Sauvegarde Automatique Active)
-                    </div>
-                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Gestion de la Boutique</h1>
-                    <p class="text-sm text-zinc-400">Connecté en tant que <span class="text-zinc-200 font-medium">eneko640@outlook.fr</span></p>
-                </div>
-                <button onclick="showSection('shop')" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm font-medium text-white transition self-start">
-                    <i class="fa-solid fa-arrow-left mr-2"></i>Retour à la boutique
-                </button>
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="search-input" class="input-field" placeholder="🔍 Rechercher une Puff, une saveur..." oninput="renderProducts()">
             </div>
-
-            <!-- Onglets Admin -->
-            <div class="flex flex-wrap gap-2 border-b border-zinc-800 pb-4">
-                <button onclick="switchAdminTab('products')" id="tab-btn-products" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-violet-600 text-white transition">
-                    <i class="fa-solid fa-box-open mr-2"></i>Produits & Stocks
-                </button>
-                <button onclick="switchAdminTab('locations')" id="tab-btn-locations" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-zinc-800/70 text-zinc-300 hover:bg-zinc-800 transition">
-                    <i class="fa-solid fa-location-dot mr-2"></i>Lieux de retrait
-                </button>
-                <button onclick="switchAdminTab('verifications')" id="tab-btn-verifications" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-zinc-800/70 text-zinc-300 hover:bg-zinc-800 transition flex items-center gap-2">
-                    <i class="fa-solid fa-envelope-open-text"></i>Demandes de codes
-                    <span id="tab-verif-badge" class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
-                </button>
-                <button onclick="switchAdminTab('users')" id="tab-btn-users" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-zinc-800/70 text-zinc-300 hover:bg-zinc-800 transition">
-                    <i class="fa-solid fa-users mr-2"></i>Comptes enregistrés
-                </button>
-                <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-zinc-800/70 text-zinc-300 hover:bg-zinc-800 transition">
-                    <i class="fa-solid fa-receipt mr-2"></i>Commandes clients
-                </button>
+            <div class="user-status-bar" id="session-banner">
+                <span>Visiteur</span>
             </div>
+        </div>
 
-            <!-- ONGLET 1 : PRODUITS & STOCKS -->
-            <div id="admin-tab-products" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Formulaire d'ajout d'offre -->
-                <div class="glass-panel rounded-2xl p-6 h-fit">
-                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-plus-circle text-violet-400"></i> Ajouter une offre
-                    </h3>
-                    <form id="add-product-form" onsubmit="handleAddProduct(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-medium text-zinc-400 mb-1">Nom de la Puff *</label>
-                            <input type="text" id="prod-name" required placeholder="Ex: Tornado 9000 - Fraise Pastèque" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-zinc-400 mb-1">Saveur / Description</label>
-                            <input type="text" id="prod-desc" placeholder="Ex: 9000 bouffées, goût frais et sucré" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-medium text-zinc-400 mb-1">Prix (€) *</label>
-                                <input type="number" id="prod-price" step="0.50" min="0" required placeholder="15.00" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-zinc-400 mb-1">Stock initial *</label>
-                                <input type="number" id="prod-stock" min="0" required placeholder="10" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-zinc-400 mb-1">Image du produit (Fichier compressé auto) *</label>
-                            <input type="file" id="prod-image-file" accept="image/*" onchange="previewAdminImage(event)" class="w-full text-xs text-zinc-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-violet-600 file:text-white hover:file:bg-violet-500 cursor-pointer bg-zinc-900 rounded-xl border border-zinc-700 p-1">
-                            <p class="text-[11px] text-zinc-500 mt-1">Ou collez un lien d'image ci-dessous :</p>
-                            <input type="url" id="prod-image-url" placeholder="https://..." class="mt-1 w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-xs focus:outline-none focus:border-violet-500">
-                            <img id="admin-img-preview" class="hidden mt-3 w-full h-32 object-cover rounded-xl border border-zinc-700" alt="Aperçu">
-                        </div>
-                        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg transition">
-                            Publier et sauvegarder l'offre
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Liste de gestion des stocks -->
-                <div class="lg:col-span-2 glass-panel rounded-2xl p-6">
-                    <h3 class="text-lg font-bold text-white mb-4">Inventaire & Stocks actuels</h3>
-                    <div id="admin-products-list" class="space-y-3">
-                        <!-- Injecté par JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- ONGLET 2 : LIEUX DE RETRAIT -->
-            <div id="admin-tab-locations" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="glass-panel rounded-2xl p-6 h-fit">
-                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-map-pin text-cyan-400"></i> Ajouter un lieu de retrait
-                    </h3>
-                    <p class="text-xs text-zinc-400 mb-4">Ajoutez une ville, un village ou une adresse précise où les clients pourront récupérer leur commande.</p>
-                    <form onsubmit="handleAddLocation(event)" class="flex gap-2">
-                        <input type="text" id="new-location-input" required placeholder="Ex: Louhossoa (Place du fronton) ou Bayonne" class="flex-grow px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-cyan-500">
-                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition shrink-0">
-                            Ajouter
-                        </button>
-                    </form>
-                </div>
-
-                <div class="glass-panel rounded-2xl p-6">
-                    <h3 class="text-lg font-bold text-white mb-4">Lieux enregistrés et sauvegardés</h3>
-                    <div id="admin-locations-list" class="space-y-2.5">
-                        <!-- Injecté par JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- ONGLET 3 : DEMANDES DE CODES DE VÉRIFICATION -->
-            <div id="admin-tab-verifications" class="hidden glass-panel rounded-2xl p-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
-                    <div>
-                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-shield-cat text-amber-400"></i> Demandes de vérification en attente
-                        </h3>
-                        <p class="text-xs text-zinc-400 mt-1">Lorsqu'un visiteur crée un compte, sa demande est sauvegardée ici et un email vers <span class="text-zinc-200">eneko640@outlook.fr</span> est préparé.</p>
-                    </div>
-                </div>
-                <div id="admin-verifications-list" class="space-y-3">
-                    <!-- Injecté par JS -->
-                </div>
-            </div>
-
-            <!-- ONGLET 4 : COMPTES UTILISATEURS ENREGISTRÉS -->
-            <div id="admin-tab-users" class="hidden glass-panel rounded-2xl p-6">
-                <h3 class="text-lg font-bold text-white mb-4">Tous les comptes sauvegardés sur le site</h3>
-                <div id="admin-users-list" class="space-y-3">
-                    <!-- Injecté par JS -->
-                </div>
-            </div>
-
-            <!-- ONGLET 5 : COMMANDES CLIENTS -->
-            <div id="admin-tab-orders" class="hidden glass-panel rounded-2xl p-6">
-                <h3 class="text-lg font-bold text-white mb-4">Historique des achats (Stocks déduits par 1 par unité)</h3>
-                <div id="admin-orders-list" class="space-y-3">
-                    <!-- Injecté par JS -->
-                </div>
-            </div>
-        </section>
-
+        <section id="products-grid" class="products-grid"></section>
     </main>
 
-    <!-- MODALE AUTHENTIFICATION (Connexion / Inscription / Vérification Code) -->
-    <div id="auth-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="glass-panel border border-zinc-700 rounded-3xl max-w-md w-full p-6 sm:p-8 relative shadow-2xl">
-            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-zinc-400 hover:text-white p-2">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
+    <!-- ======================================================================
+         MODALE 1 : CONNEXION / INSCRIPTION HAUTE SÉCURITÉ / CODE VÉRIFICATION
+         ====================================================================== -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="modal-title" id="auth-modal-title">Connexion à PuffZone 64</h2>
+                <button type="button" class="btn-close" onclick="closeModal('auth-modal')">✕</button>
+            </div>
 
-            <!-- VUE 1 : CONNEXION -->
+            <!-- VUE A : CONNEXION -->
             <div id="auth-view-login">
-                <div class="text-center mb-6">
-                    <div class="w-12 h-12 rounded-2xl bg-violet-600/20 text-violet-400 flex items-center justify-center mx-auto mb-3">
-                        <i class="fa-solid fa-right-to-bracket text-xl"></i>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Adresse Email</label>
+                        <input type="email" id="login-email" class="input-field" required placeholder="exemple@email.fr">
                     </div>
-                    <h2 class="text-2xl font-bold text-white">Connexion</h2>
-                    <p class="text-xs text-zinc-400 mt-1">Accédez à votre espace client ou administrateur</p>
-                </div>
-
-                <form onsubmit="handleLogin(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-400 mb-1">Adresse Email</label>
-                        <input type="email" id="login-email" required placeholder="exemple@email.com" class="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" id="login-password" class="input-field" required placeholder="Votre mot de passe">
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-400 mb-1">Mot de passe</label>
-                        <input type="password" id="login-password" required placeholder="••••••••••••" class="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
-                    </div>
-                    <button type="submit" class="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm transition shadow-lg shadow-violet-600/25">
-                        Se connecter
-                    </button>
+                    <button type="submit" class="btn-submit">Se connecter</button>
                 </form>
 
-                <div class="mt-6 pt-5 border-t border-zinc-800 text-center space-y-2">
-                    <p class="text-xs text-zinc-400">Pas encore de compte ?</p>
-                    <button onclick="switchAuthView('register')" class="text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition">
-                        Créer un compte sécurisé &rarr;
-                    </button>
-                    <div class="pt-2">
-                        <button onclick="switchAuthView('verify')" class="text-xs text-zinc-500 hover:text-zinc-300 underline">
-                            J'ai déjà reçu mon code de vérification
-                        </button>
-                    </div>
-                </div>
+                <button type="button" class="btn-secondary" onclick="switchAuthView('register')">
+                    Pas encore de compte ? Créer un compte
+                </button>
+                <button type="button" class="btn-secondary" onclick="switchAuthView('verify')">
+                    J'ai déjà reçu mon code de vérification
+                </button>
             </div>
 
-            <!-- VUE 2 : INSCRIPTION STRICTE -->
+            <!-- VUE B : CRÉATION DE COMPTE HAUTE SÉCURITÉ -->
             <div id="auth-view-register" class="hidden">
-                <div class="text-center mb-5">
-                    <div class="w-12 h-12 rounded-2xl bg-cyan-600/20 text-cyan-400 flex items-center justify-center mx-auto mb-3">
-                        <i class="fa-solid fa-user-shield text-xl"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-white">Créer un compte</h2>
-                    <p class="text-xs text-zinc-400 mt-1">Validation par code envoyée à l'administrateur</p>
+                <div class="info-alert">
+                    Après validation, votre demande sera transmise directement dans la boîte de réception de <strong>eneko640@outlook.fr</strong> afin de générer votre code de vérification.
                 </div>
 
-                <form onsubmit="handleRegister(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-400 mb-1">Votre Email *</label>
-                        <input type="email" id="reg-email" oninput="validatePasswordLive()" required placeholder="client@exemple.fr" class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-cyan-500">
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">Votre adresse Email</label>
+                        <input type="email" id="reg-email" class="input-field" required placeholder="votre@email.fr" oninput="validatePasswordLive()">
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-400 mb-1">Mot de passe haute sécurité *</label>
-                        <div class="relative">
-                            <input type="password" id="reg-password" oninput="validatePasswordLive()" required placeholder="16 à 32 caractères..." class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-cyan-500 pr-10">
-                            <button type="button" onclick="toggleRegPasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xs">
-                                <i id="reg-eye-icon" class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>
-                        
-                        <!-- Règles en temps réel -->
-                        <div class="mt-3 p-3 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-1.5 text-xs">
-                            <div id="rule-length" class="flex items-center gap-2 text-zinc-500">
-                                <i class="fa-solid fa-circle-xmark w-3.5"></i> Entre 16 et 32 caractères (<span id="pw-char-count">0</span>/32)
-                            </div>
-                            <div id="rule-upper" class="flex items-center gap-2 text-zinc-500">
-                                <i class="fa-solid fa-circle-xmark w-3.5"></i> Au moins 1 lettre majuscule (A-Z)
-                            </div>
-                            <div id="rule-special" class="flex items-center gap-2 text-zinc-500">
-                                <i class="fa-solid fa-circle-xmark w-3.5"></i> Au moins 1 caractère spécial (!@#$%...)
-                            </div>
-                            <div id="rule-no-info" class="flex items-center gap-2 text-zinc-500">
-                                <i class="fa-solid fa-circle-xmark w-3.5"></i> Aucune info personnelle (email, nom...)
-                            </div>
-                        </div>
-                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Créer un mot de passe (16 à 32 caractères)</label>
+                        <input type="password" id="reg-password" class="input-field" maxlength="32" required placeholder="Minimum 16 caractères" oninput="validatePasswordLive()">
 
-                    <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-violet-600 hover:from-cyan-500 hover:to-violet-500 text-white font-semibold text-sm transition shadow-lg">
-                        Créer et demander mon code
-                    </button>
+                        <div class="pw-rules">
+                            <div id="rule-len" class="pw-rule">○ Entre 16 et 32 caractères (<span id="pw-count">0</span>/32)</div>
+                            <div id="rule-upper" class="pw-rule">○ Au moins une lettre majuscule (A-Z)</div>
+                            <div id="rule-special" class="pw-rule">○ Au moins un caractère spécial (!@#$%^&amp;*...)</div>
+                            <div id="rule-nopersonal" class="pw-rule">○ Aucune information personnelle issue de votre email</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">Demander la création du compte</button>
                 </form>
 
-                <div class="mt-5 pt-4 border-t border-zinc-800 text-center">
-                    <button onclick="switchAuthView('login')" class="text-xs font-medium text-zinc-400 hover:text-white">
-                        &larr; Retour à la connexion
-                    </button>
-                </div>
+                <button type="button" class="btn-secondary" onclick="switchAuthView('login')">
+                    ← Retour à la connexion
+                </button>
             </div>
 
-            <!-- VUE 3 : SAISIE DU CODE DE VÉRIFICATION -->
+            <!-- VUE C : VALIDATION DU CODE REÇU -->
             <div id="auth-view-verify" class="hidden">
-                <div class="text-center mb-5">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-3">
-                        <i class="fa-solid fa-key text-xl"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-white">Vérification requise</h2>
-                    <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
-                        Un message a été préparé pour <span class="text-white font-semibold">eneko640@outlook.fr</span> afin d'obtenir votre code de vérification.
-                    </p>
+                <div class="info-alert">
+                    Votre demande a été envoyée à <strong>eneko640@outlook.fr</strong> :<br>
+                    <em>« <span id="verify-quote-email">votre email</span> a besoin d'un code de vérification »</em>.<br><br>
+                    <a id="client-mailto-admin" href="mailto:eneko640@outlook.fr" class="btn-sm btn-cyan" style="margin-bottom:8px;">
+                        ✉️ Envoyer aussi un email direct à eneko640@outlook.fr
+                    </a><br>
+                    Dès que l'administrateur vous transmet le code à 6 chiffres, saisissez-le ci-dessous :
                 </div>
 
-                <!-- Bouton d'envoi direct via client mail -->
-                <div class="mb-4 p-3 rounded-xl bg-violet-500/10 border border-violet-500/30 text-center">
-                    <p class="text-xs text-zinc-300 mb-2">Cliquez ci-dessous pour envoyer l'email si besoin :</p>
-                    <a id="mailto-trigger-link" href="#" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold transition">
-                        <i class="fa-solid fa-paper-plane"></i> Envoyer l'email à eneko640@outlook.fr
-                    </a>
-                </div>
-
-                <form onsubmit="handleVerifyCode(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-400 mb-1">Email du compte</label>
-                        <input type="email" id="verify-email" required placeholder="votre@email.fr" class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-amber-500">
+                <form onsubmit="handleVerifyCode(event)">
+                    <div class="form-group">
+                        <label class="form-label">Email du compte à activer</label>
+                        <input type="email" id="verify-email" class="input-field" required placeholder="votre@email.fr">
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium text-zinc-400 mb-1">Code de vérification à 6 chiffres</label>
-                        <input type="text" id="verify-code-input" maxlength="6" required placeholder="123456" class="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-center text-lg font-mono tracking-widest focus:outline-none focus:border-amber-500">
+                    <div class="form-group">
+                        <label class="form-label">Code de vérification à 6 chiffres</label>
+                        <input type="text" id="verify-code" class="input-field" maxlength="6" required placeholder="000000" style="text-align:center;font-size:1.25rem;letter-spacing:0.25em;font-weight:800;">
                     </div>
-                    <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition">
-                        Valider et activer mon compte
+                    <button type="submit" class="btn-submit" style="background:var(--success);color:#06101f;">
+                        Valider le code et activer mon compte
                     </button>
                 </form>
 
-                <div class="mt-5 pt-4 border-t border-zinc-800 text-center">
-                    <button onclick="switchAuthView('login')" class="text-xs font-medium text-zinc-400 hover:text-white">
-                        &larr; Retour à la connexion
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODALE PANIER & COMMANDE -->
-    <div id="cart-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex justify-end">
-        <div class="glass-panel border-l border-zinc-800 w-full max-w-md h-full flex flex-col justify-between p-6 overflow-y-auto">
-            <div>
-                <div class="flex items-center justify-between border-b border-zinc-800 pb-4 mb-4">
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-bag-shopping text-violet-400"></i> Votre Panier
-                    </h2>
-                    <button onclick="toggleCartModal()" class="text-zinc-400 hover:text-white p-2">
-                        <i class="fa-solid fa-xmark text-xl"></i>
-                    </button>
-                </div>
-
-                <!-- Articles du panier -->
-                <div id="cart-items-container" class="space-y-3 max-h-[45vh] overflow-y-auto pr-1">
-                    <!-- Injecté par JS -->
-                </div>
-            </div>
-
-            <!-- Validation & Lieu de retrait -->
-            <div class="border-t border-zinc-800 pt-4 mt-4 space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-zinc-300 mb-1.5">
-                        <i class="fa-solid fa-location-dot text-cyan-400 mr-1"></i> Choisir un lieu de retrait *
-                    </label>
-                    <select id="checkout-location-select" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-cyan-500">
-                        <!-- Injecté par JS -->
-                    </select>
-                </div>
-
-                <div class="flex items-center justify-between text-base font-bold text-white">
-                    <span>Total à régler sur place :</span>
-                    <span id="cart-total-price" class="text-xl text-cyan-400">0.00 €</span>
-                </div>
-
-                <button onclick="handleCheckout()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-500 hover:to-cyan-500 text-white font-bold text-sm shadow-lg shadow-violet-600/20 transition">
-                    Confirmer la réservation
+                <button type="button" class="btn-secondary" onclick="switchAuthView('login')">
+                    ← Retour à la connexion
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Pied de page -->
-    <footer class="border-t border-zinc-900 py-6 mt-12 text-center text-xs text-zinc-500">
-        <p>PuffZone 64 &copy; 2026 — Vente réservée aux personnes majeures (+18 ans). Données synchronisées et sauvegardées.</p>
-    </footer>
+    <!-- ======================================================================
+         MODALE 2 : PANIER & RÉSERVATION CLICK & COLLECT
+         ====================================================================== -->
+    <div id="cart-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="modal-title">🛒 Mon Panier</h2>
+                <button type="button" class="btn-close" onclick="closeModal('cart-modal')">✕</button>
+            </div>
 
-    <!-- LOGIQUE PERSISTANTE FIREBASE FIRESTORE + FALLBACK MIROIR -->
+            <div id="cart-items-container"></div>
+
+            <div id="cart-checkout-section" class="hidden" style="margin-top:16px;">
+                <div class="form-group">
+                    <label class="form-label">📍 Choisir le lieu de retrait (Ville / Village / Adresse)</label>
+                    <select id="cart-pickup-select" class="input-field"></select>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;font-size:1.1rem;font-weight:800;">
+                    <span>Total à régler sur place :</span>
+                    <span id="cart-total-price" style="color:var(--accent-cyan);">0.00 €</span>
+                </div>
+
+                <button type="button" class="btn-submit" onclick="checkoutCart()">
+                    Confirmer la réservation (Déduit le stock)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         MODALE 3 : ESPACE ADMINISTRATEUR (UNIQUEMENT ENEKO640@OUTLOOK.FR)
+         ====================================================================== -->
+    <div id="admin-modal" class="modal-overlay">
+        <div class="modal-card modal-wide">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title">🛡️ Espace Administrateur — eneko640@outlook.fr</h2>
+                    <div style="font-size:0.75rem;color:#94a3b8;">Accès sécurisé • Sauvegarde permanente active</div>
+                </div>
+                <button type="button" class="btn-close" onclick="closeModal('admin-modal')">✕</button>
+            </div>
+
+            <div class="admin-tabs">
+                <button type="button" class="admin-tab active" id="tab-btn-inbox" onclick="switchAdminTab('inbox')">
+                    📥 Boîte de réception <span id="tab-inbox-count" class="badge-count">0</span>
+                </button>
+                <button type="button" class="admin-tab" id="tab-btn-products" onclick="switchAdminTab('products')">
+                    💨 Offres &amp; Stocks
+                </button>
+                <button type="button" class="admin-tab" id="tab-btn-locations" onclick="switchAdminTab('locations')">
+                    📍 Lieux de retrait
+                </button>
+                <button type="button" class="admin-tab" id="tab-btn-records" onclick="switchAdminTab('records')">
+                    📋 Commandes &amp; Comptes
+                </button>
+            </div>
+
+            <!-- ONGLET 1 : BOÎTE DE RÉCEPTION -->
+            <div id="admin-panel-inbox">
+                <div class="info-alert">
+                    Chaque création de compte client génère un code secret à 6 chiffres et l'affiche ici avec l'email auquel vous devez l'envoyer.
+                </div>
+                <div id="admin-inbox-list"></div>
+            </div>
+
+            <!-- ONGLET 2 : OFFRES & STOCKS -->
+            <div id="admin-panel-products" class="hidden">
+                <form onsubmit="handleAdminAddProduct(event)" class="admin-form-grid">
+                    <div>
+                        <label class="form-label">Nom de la Puff</label>
+                        <input type="text" id="new-prod-name" class="input-field" required placeholder="Ex: Tornado 15K Fraise Kiwi">
+                    </div>
+                    <div>
+                        <label class="form-label">Saveur / Description</label>
+                        <input type="text" id="new-prod-desc" class="input-field" required placeholder="Ex: Fraise sucrée &amp; Kiwi frais">
+                    </div>
+                    <div>
+                        <label class="form-label">Prix (€)</label>
+                        <input type="number" id="new-prod-price" step="0.5" min="1" class="input-field" required placeholder="15.00">
+                    </div>
+                    <div>
+                        <label class="form-label">Stock initial</label>
+                        <input type="number" id="new-prod-stock" min="0" class="input-field" required placeholder="10">
+                    </div>
+                    <div>
+                        <label class="form-label">Photo (Fichier depuis appareil)</label>
+                        <input type="file" id="new-prod-file" accept="image/*" class="input-field" style="padding:8px;">
+                    </div>
+                    <div>
+                        <label class="form-label">Ou lien URL image (optionnel)</label>
+                        <input type="url" id="new-prod-url" class="input-field" placeholder="https://...">
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <button type="submit" class="btn-submit" style="margin-top:0;">+ Ajouter cette offre au catalogue</button>
+                    </div>
+                </form>
+
+                <div id="admin-products-list"></div>
+            </div>
+
+            <!-- ONGLET 3 : LIEUX DE RETRAIT -->
+            <div id="admin-panel-locations" class="hidden">
+                <form onsubmit="handleAdminAddLocation(event)" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+                    <input type="text" id="new-location-input" class="input-field" style="flex:1 1 240px;" required placeholder="Ex: Louhossoa - Place du Fronton, Bayonne...">
+                    <button type="submit" class="btn-submit" style="width:auto;margin-top:0;padding:11px 18px;">+ Ajouter ce lieu</button>
+                </form>
+                <div id="admin-locations-list"></div>
+            </div>
+
+            <!-- ONGLET 4 : COMMANDES & COMPTES -->
+            <div id="admin-panel-records" class="hidden">
+                <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:10px;color:#38bdf8;">Dernières commandes validées</h3>
+                <div id="admin-orders-list" style="margin-bottom:22px;"></div>
+
+                <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:10px;color:#34d399;">Comptes clients enregistrés</h3>
+                <div id="admin-users-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ======================================================================
+         FIREBASE CLOUD SYNC + REPLI LOCALSTORAGE & SÉCURITÉ ADMIN STRICTE
+         ====================================================================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ==========================================
-        // 1. CONSTANTES & CONFIGURATION
-        // ==========================================
+        // Constantes Administrateur
         const ADMIN_EMAIL = "eneko640@outlook.fr";
         const ADMIN_PASS = "Eneko@64K";
+        const STORAGE_KEY = "puffzone64_secure_db_v4";
+        const SESSION_KEY = "puffzone64_active_session_v4";
 
-        const defaultProducts = [
-            {
-                id: 'p1',
-                name: 'RandM Tornado 9000 - Fraise Pastèque',
-                desc: '9000 bouffées • Rechargeable USB-C • Effet frais',
-                price: 15.00,
-                stock: 8,
-                image: 'https://images.unsplash.com/photo-1560913210-91b74d80e0a8?auto=format&fit=crop&w=600&q=80'
-            },
-            {
-                id: 'p2',
-                name: 'JNR Falcon 16K - Myrtille Framboise',
-                desc: '16000 bouffées • Double Mesh Coil • Saveur intense',
-                price: 18.00,
-                stock: 5,
-                image: 'https://images.unsplash.com/photo-1534120247760-c44c3e4a62f1?auto=format&fit=crop&w=600&q=80'
-            },
-            {
-                id: 'p3',
-                name: 'Wpuff 2.0 - Mangue Glacée',
-                desc: '2000 bouffées • Format compact • Sans nicotine',
-                price: 10.00,
-                stock: 12,
-                image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?auto=format&fit=crop&w=600&q=80'
-            }
-        ];
-
-        const defaultLocations = [
-            { id: 'loc1', label: "Louhossoa - Place du Fronton" },
-            { id: 'loc2', label: "Cambo-les-Bains - Centre-ville" },
-            { id: 'loc3', label: "Bayonne - Gare SNCF" },
-            { id: 'loc4', label: "Espelette - Parking principal" }
-        ];
-
-        // État global de l'application
-        let state = {
-            users: [],
-            products: [],
-            locations: [],
-            orders: [],
-            cart: [],
-            currentUser: null,
-            uploadedBase64Image: null
-        };
-
-        // Variables Firebase
-        let db = null;
-        let auth = null;
-        let isCloudReady = false;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'puffzone-64-store';
-
-        // ==========================================
-        // 2. INDICATEUR DE SAUVEGARDE & MIROIR LOCAL
-        // ==========================================
-        function setSyncIndicator(status) {
-            const badge = document.getElementById('sync-status-badge');
-            const text = document.getElementById('sync-status-text');
-            if (!badge || !text) return;
-
-            badge.classList.remove('hidden');
-            if (status === 'saving') {
-                badge.className = "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 transition-all";
-                badge.innerHTML = `<i class="fa-solid fa-rotate fa-spin"></i><span>Synchronisation...</span>`;
-            } else {
-                badge.className = "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all";
-                badge.innerHTML = `<i class="fa-solid fa-cloud-check"></i><span>Sauvegardé ✓</span>`;
-            }
-        }
-
-        function saveMirrorToLocal() {
-            try {
-                localStorage.setItem('pz_v2_users', JSON.stringify(state.users));
-                localStorage.setItem('pz_v2_products', JSON.stringify(state.products));
-                localStorage.setItem('pz_v2_locations', JSON.stringify(state.locations));
-                localStorage.setItem('pz_v2_orders', JSON.stringify(state.orders));
-                if (state.currentUser) {
-                    sessionStorage.setItem('pz_v2_session', JSON.stringify(state.currentUser));
-                } else {
-                    sessionStorage.removeItem('pz_v2_session');
-                }
-            } catch (e) {
-                console.warn("Erreur sauvegarde miroir :", e);
-            }
-        }
-
-        function loadMirrorFromLocal() {
-            const u = localStorage.getItem('pz_v2_users');
-            const p = localStorage.getItem('pz_v2_products');
-            const l = localStorage.getItem('pz_v2_locations');
-            const o = localStorage.getItem('pz_v2_orders');
-            const s = sessionStorage.getItem('pz_v2_session');
-
-            state.users = u ? JSON.parse(u) : [];
-            if (!state.users.some(x => x.email.toLowerCase() === ADMIN_EMAIL)) {
-                state.users.push({
-                    id: 'admin_eneko',
+        const DEFAULT_STATE = {
+            users: [
+                {
                     email: ADMIN_EMAIL,
                     password: ADMIN_PASS,
-                    verified: true,
                     isAdmin: true,
-                    createdAt: 'Compte Administrateur Principal'
-                });
-            }
-            state.products = p ? JSON.parse(p) : [...defaultProducts];
-            state.locations = l ? JSON.parse(l) : [...defaultLocations];
-            state.orders = o ? JSON.parse(o) : [];
-            state.currentUser = s ? JSON.parse(s) : null;
-        }
-
-        // ==========================================
-        // 3. INITIALISATION FIRESTORE TEMPS RÉEL
-        // ==========================================
-        function sanitizeDocId(str) {
-            return str.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
-        }
-
-        async function persistRecord(collectionName, docId, data) {
-            setSyncIndicator('saving');
-            saveMirrorToLocal();
-
-            if (isCloudReady && db && auth.currentUser) {
-                try {
-                    const ref = doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId);
-                    await setDoc(ref, data);
-                } catch (err) {
-                    console.error(`Erreur sauvegarde cloud (${collectionName}):`, err);
+                    verified: true,
+                    createdAt: "Compte Administrateur"
                 }
-            }
-            setTimeout(() => setSyncIndicator('saved'), 400);
-        }
-
-        async function removeRecord(collectionName, docId) {
-            setSyncIndicator('saving');
-            saveMirrorToLocal();
-
-            if (isCloudReady && db && auth.currentUser) {
-                try {
-                    const ref = doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId);
-                    await deleteDoc(ref);
-                } catch (err) {
-                    console.error(`Erreur suppression cloud (${collectionName}):`, err);
+            ],
+            products: [
+                {
+                    id: "puff-1",
+                    name: "RandM Tornado 15000 — Myrtille Framboise",
+                    desc: "15 000 bouffées • Saveur fruits des bois glacés • Batterie rechargeable USB-C",
+                    price: 15.00,
+                    stock: 12,
+                    image: "https://placehold.co/600x400/0f172a/38bdf8?text=Tornado+15K+Myrtille"
+                },
+                {
+                    id: "puff-2",
+                    name: "JNR Falcon 16000 — Pastèque Glacée",
+                    desc: "16 000 bouffées • Fraîcheur intense pastèque • Double Mesh Coil",
+                    price: 16.00,
+                    stock: 8,
+                    image: "https://placehold.co/600x400/0f172a/f43f5e?text=Falcon+16K+Pasteque"
+                },
+                {
+                    id: "puff-3",
+                    name: "Hayati Pro Ultra 15000 — Mangue Pêche",
+                    desc: "15 000 bouffées • Double réservoir tropical • Rendu aromatique intense",
+                    price: 15.50,
+                    stock: 5,
+                    image: "https://placehold.co/600x400/0f172a/818cf8?text=Hayati+15K+Mangue"
                 }
-            }
-            setTimeout(() => setSyncIndicator('saved'), 400);
+            ],
+            locations: [
+                "Louhossoa (Centre / Place du Fronton)",
+                "Cambo-les-Bains (Centre-ville)",
+                "Hasparren (Place des Tilleuls)",
+                "Bayonne (Gare / Centre)",
+                "Biarritz (Halles)"
+            ],
+            orders: []
+        };
+
+        let appState = loadLocalState();
+        let currentUser = loadSession();
+        let cart = [];
+        let db = null;
+        let firebaseReady = false;
+        const appId = typeof __app_id !== "undefined" ? __app_id : "puffzone-64-store";
+
+        // Fonction stricte de vérification des droits Administrateur
+        function isAuthenticatedAdmin() {
+            return Boolean(
+                currentUser &&
+                currentUser.email &&
+                currentUser.email.toLowerCase() === ADMIN_EMAIL &&
+                currentUser.isAdmin === true &&
+                currentUser.verified === true
+            );
         }
 
-        async function initDatabase() {
-            loadMirrorFromLocal();
-            refreshAllUI();
-
+        // Initialisation optionnelle de Firebase (si disponible dans l'environnement)
+        async function initCloudStorage() {
             try {
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                    const firebaseConfig = JSON.parse(__firebase_config);
-                    const app = initializeApp(firebaseConfig);
-                    db = getFirestore(app);
-                    auth = getAuth(app);
+                if (typeof __firebase_config === "undefined") return;
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                db = getFirestore(app);
 
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
+                if (typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                if (!auth.currentUser) return;
+                firebaseReady = true;
+
+                const stateDocRef = doc(db, "artifacts", appId, "public", "data", "store_state", "main");
+                onSnapshot(stateDocRef, (snap) => {
+                    if (snap.exists()) {
+                        const cloudData = snap.data();
+                        appState = normalizeState(cloudData);
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+                        if (currentUser) {
+                            currentUser = appState.users.find(u => u.email.toLowerCase() === currentUser.email.toLowerCase() && u.verified) || null;
+                        }
+                        refreshUI();
+                        if (isAuthenticatedAdmin() && document.getElementById("admin-modal").classList.contains("open")) {
+                            renderAdminAll();
+                        }
                     } else {
-                        await signInAnonymously(auth);
+                        setDoc(stateDocRef, appState).catch(() => {});
                     }
-
-                    isCloudReady = true;
-                    setupRealtimeListeners();
-                }
-            } catch (error) {
-                console.warn("Mode autonome local activé :", error);
-                setSyncIndicator('saved');
+                }, () => {});
+            } catch (e) {
+                firebaseReady = false;
             }
         }
 
-        function setupRealtimeListeners() {
-            if (!isCloudReady || !db || !auth.currentUser) return;
-
-            // 1. Écoute en temps réel des utilisateurs (Comptes & Demandes de codes)
-            const usersCol = collection(db, 'artifacts', appId, 'public', 'data', 'users');
-            onSnapshot(usersCol, async (snapshot) => {
-                if (snapshot.empty) {
-                    // Initialiser les utilisateurs existants (dont l'admin eneko640@outlook.fr) dans le cloud
-                    for (const u of state.users) {
-                        await persistRecord('users', sanitizeDocId(u.email), u);
-                    }
-                } else {
-                    const cloudUsers = [];
-                    snapshot.forEach(docSnap => cloudUsers.push(docSnap.data()));
-                    // Garantir que l'admin est toujours présent
-                    if (!cloudUsers.some(u => u.email.toLowerCase() === ADMIN_EMAIL)) {
-                        const adminObj = {
-                            id: 'admin_eneko',
-                            email: ADMIN_EMAIL,
-                            password: ADMIN_PASS,
-                            verified: true,
-                            isAdmin: true,
-                            createdAt: 'Compte Administrateur Principal'
-                        };
-                        cloudUsers.push(adminObj);
-                        await persistRecord('users', sanitizeDocId(ADMIN_EMAIL), adminObj);
-                    }
-                    state.users = cloudUsers;
-                    saveMirrorToLocal();
-                    refreshAllUI();
-                }
-            }, (err) => console.error("Erreur listener users:", err));
-
-            // 2. Écoute en temps réel des produits & stocks
-            const productsCol = collection(db, 'artifacts', appId, 'public', 'data', 'products');
-            onSnapshot(productsCol, async (snapshot) => {
-                if (snapshot.empty && !localStorage.getItem('pz_v2_initialized_products')) {
-                    localStorage.setItem('pz_v2_initialized_products', 'true');
-                    for (const p of state.products) {
-                        await persistRecord('products', p.id, p);
-                    }
-                } else if (!snapshot.empty) {
-                    const cloudProds = [];
-                    snapshot.forEach(docSnap => cloudProds.push(docSnap.data()));
-                    state.products = cloudProds;
-                    saveMirrorToLocal();
-                    refreshAllUI();
-                }
-            }, (err) => console.error("Erreur listener products:", err));
-
-            // 3. Écoute en temps réel des lieux de retrait
-            const locationsCol = collection(db, 'artifacts', appId, 'public', 'data', 'pickup_locations');
-            onSnapshot(locationsCol, async (snapshot) => {
-                if (snapshot.empty && !localStorage.getItem('pz_v2_initialized_locations')) {
-                    localStorage.setItem('pz_v2_initialized_locations', 'true');
-                    for (const loc of state.locations) {
-                        await persistRecord('pickup_locations', loc.id, loc);
-                    }
-                } else if (!snapshot.empty) {
-                    const cloudLocs = [];
-                    snapshot.forEach(docSnap => cloudLocs.push(docSnap.data()));
-                    state.locations = cloudLocs;
-                    saveMirrorToLocal();
-                    refreshAllUI();
-                }
-            }, (err) => console.error("Erreur listener locations:", err));
-
-            // 4. Écoute en temps réel des commandes
-            const ordersCol = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
-            onSnapshot(ordersCol, (snapshot) => {
-                const cloudOrders = [];
-                snapshot.forEach(docSnap => cloudOrders.push(docSnap.data()));
-                // Trier en mémoire du plus récent au plus ancien
-                cloudOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                if (cloudOrders.length > 0) {
-                    state.orders = cloudOrders;
-                    saveMirrorToLocal();
-                    refreshAllUI();
-                }
-            }, (err) => console.error("Erreur listener orders:", err));
+        function normalizeState(rawObj) {
+            const parsed = rawObj || {};
+            if (!Array.isArray(parsed.users)) parsed.users = [];
+            const adminIdx = parsed.users.findIndex(u => u.email && u.email.toLowerCase() === ADMIN_EMAIL);
+            if (adminIdx === -1) {
+                parsed.users.unshift({
+                    email: ADMIN_EMAIL,
+                    password: ADMIN_PASS,
+                    isAdmin: true,
+                    verified: true,
+                    createdAt: "Compte Administrateur"
+                });
+            } else {
+                parsed.users[adminIdx].email = ADMIN_EMAIL;
+                parsed.users[adminIdx].password = ADMIN_PASS;
+                parsed.users[adminIdx].isAdmin = true;
+                parsed.users[adminIdx].verified = true;
+            }
+            if (!Array.isArray(parsed.products)) parsed.products = DEFAULT_STATE.products;
+            if (!Array.isArray(parsed.locations)) parsed.locations = DEFAULT_STATE.locations;
+            if (!Array.isArray(parsed.orders)) parsed.orders = [];
+            return parsed;
         }
 
-        function refreshAllUI() {
-            updateHeaderUI();
-            renderShop();
-            updateCartUI();
-            if (!document.getElementById('section-admin').classList.contains('hidden')) {
-                renderAdminDashboard();
+        function loadLocalState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_STATE));
+                    return JSON.parse(JSON.stringify(DEFAULT_STATE));
+                }
+                return normalizeState(JSON.parse(raw));
+            } catch (e) {
+                return JSON.parse(JSON.stringify(DEFAULT_STATE));
             }
         }
 
-        // ==========================================
-        // 4. NOTIFICATIONS (TOASTS)
-        // ==========================================
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            const colors = {
-                success: 'bg-emerald-950/95 border-emerald-500/50 text-emerald-200',
-                error: 'bg-red-950/95 border-red-500/50 text-red-200',
-                warning: 'bg-amber-950/95 border-amber-500/50 text-amber-200',
-                info: 'bg-zinc-900/95 border-violet-500/50 text-zinc-100'
-            };
-            const icons = {
-                success: 'fa-circle-check text-emerald-400',
-                error: 'fa-circle-exclamation text-red-400',
-                warning: 'fa-triangle-exclamation text-amber-400',
-                info: 'fa-circle-info text-violet-400'
-            };
+        async function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+                if (firebaseReady && db) {
+                    const stateDocRef = doc(db, "artifacts", appId, "public", "data", "store_state", "main");
+                    await setDoc(stateDocRef, appState);
+                }
+                if (isAuthenticatedAdmin()) {
+                    const badge = document.getElementById("save-status-badge");
+                    if (badge) {
+                        badge.textContent = "Sauvegardé ✓";
+                        badge.classList.add("visible");
+                    }
+                }
+            } catch (e) {
+                showToast("Erreur lors de la sauvegarde.", "error");
+            }
+        }
 
-            toast.className = `pointer-events-auto flex items-start gap-3 p-4 rounded-2xl border shadow-xl backdrop-blur-md transition-all duration-300 transform translate-x-0 ${colors[type]}`;
-            toast.innerHTML = `
-                <i class="fa-solid ${icons[type]} mt-0.5 text-base"></i>
-                <div class="text-xs font-medium leading-relaxed">${message}</div>
-            `;
-            container.appendChild(toast);
+        function loadSession() {
+            try {
+                const raw = sessionStorage.getItem(SESSION_KEY);
+                if (!raw) return null;
+                const email = JSON.parse(raw);
+                return appState.users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.verified) || null;
+            } catch (e) {
+                return null;
+            }
+        }
 
+        function saveSession(user) {
+            currentUser = user;
+            if (user) {
+                sessionStorage.setItem(SESSION_KEY, JSON.stringify(user.email.toLowerCase()));
+            } else {
+                sessionStorage.removeItem(SESSION_KEY);
+            }
+        }
+
+        // ====================================================================
+        // NOTIFICATIONS & MODALES
+        // ====================================================================
+        function showToast(message, type = "info") {
+            const container = document.getElementById("toast-container");
+            const el = document.createElement("div");
+            el.className = `toast ${type}`;
+            el.textContent = message;
+            container.appendChild(el);
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-x-4');
-                setTimeout(() => toast.remove(), 300);
-            }, 4500);
+                el.style.opacity = "0";
+                el.style.transition = "opacity 0.25s";
+                setTimeout(() => el.remove(), 260);
+            }, 3400);
         }
 
-        // ==========================================
-        // 5. NAVIGATION & INTERFACE UTILISATEUR
-        // ==========================================
-        window.showSection = function(sectionName) {
-            document.getElementById('section-shop').classList.add('hidden');
-            document.getElementById('section-admin').classList.add('hidden');
-
-            if (sectionName === 'admin') {
-                if (!state.currentUser || state.currentUser.email.toLowerCase() !== ADMIN_EMAIL) {
-                    showToast("Accès réservé à l'administrateur.", "error");
-                    window.showSection('shop');
-                    return;
-                }
-                document.getElementById('section-admin').classList.remove('hidden');
-                renderAdminDashboard();
-            } else {
-                document.getElementById('section-shop').classList.remove('hidden');
-                renderShop();
+        function openModal(id) {
+            if (id === "admin-modal" && !isAuthenticatedAdmin()) {
+                showToast("Accès refusé : réservé à l'administrateur.", "error");
+                return;
             }
-        };
-
-        function updateHeaderUI() {
-            const authArea = document.getElementById('auth-nav-area');
-            const adminBtn = document.getElementById('nav-admin-btn');
-            const badgeCount = document.getElementById('admin-badge-count');
-
-            const pendingCount = state.users.filter(u => !u.verified).length;
-            if (pendingCount > 0) {
-                badgeCount.textContent = pendingCount;
-                badgeCount.classList.remove('hidden');
-            } else {
-                badgeCount.classList.add('hidden');
-            }
-
-            if (state.currentUser) {
-                const isAdmin = state.currentUser.email.toLowerCase() === ADMIN_EMAIL;
-                if (isAdmin) {
-                    adminBtn.classList.remove('hidden');
-                } else {
-                    adminBtn.classList.add('hidden');
-                }
-
-                authArea.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <span class="hidden md:inline text-xs font-medium text-zinc-300 bg-zinc-800/80 px-3 py-1.5 rounded-xl border border-zinc-700">
-                            ${state.currentUser.email}
-                        </span>
-                        <button onclick="handleLogout()" title="Déconnexion" class="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition text-xs font-semibold">
-                            <i class="fa-solid fa-power-off"></i>
-                        </button>
-                    </div>
-                `;
-            } else {
-                adminBtn.classList.add('hidden');
-                authArea.innerHTML = `
-                    <button onclick="openAuthModal('login')" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-md shadow-violet-600/20 transition">
-                        <i class="fa-solid fa-user mr-1.5"></i>Connexion
-                    </button>
-                `;
-            }
+            closeAllModals();
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add("open");
         }
 
-        // ==========================================
-        // 6. AUTHENTIFICATION & INSCRIPTION STRICTE
-        // ==========================================
-        window.openAuthModal = function(view = 'login') {
-            document.getElementById('auth-modal').classList.remove('hidden');
-            window.switchAuthView(view);
-        };
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.remove("open");
+        }
 
-        window.closeAuthModal = function() {
-            document.getElementById('auth-modal').classList.add('hidden');
-        };
+        function closeAllModals() {
+            document.querySelectorAll(".modal-overlay").forEach(m => m.classList.remove("open"));
+        }
 
-        window.switchAuthView = function(view) {
-            document.getElementById('auth-view-login').classList.add('hidden');
-            document.getElementById('auth-view-register').classList.add('hidden');
-            document.getElementById('auth-view-verify').classList.add('hidden');
-            document.getElementById(`auth-view-${view}`).classList.remove('hidden');
-        };
-
-        window.toggleRegPasswordVisibility = function() {
-            const input = document.getElementById('reg-password');
-            const icon = document.getElementById('reg-eye-icon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        };
-
+        // ====================================================================
+        // INSCRIPTION HAUTE SÉCURITÉ (16-32 CARACTÈRES, SANS INFOS PERSO)
+        // ====================================================================
         function checkPasswordRules(email, password) {
-            const lengthOk = password.length >= 16 && password.length <= 32;
+            const lenOk = password.length >= 16 && password.length <= 32;
             const upperOk = /[A-Z]/.test(password);
             const specialOk = /[^A-Za-z0-9]/.test(password);
 
-            let noInfoOk = true;
+            let noPersonalOk = true;
             const lowerPw = password.toLowerCase();
+            if (email && email.includes("@")) {
+                const parts = email.toLowerCase().split("@");
+                const localPart = parts[0].trim();
+                const domainName = parts[1] ? parts[1].split(".")[0].trim() : "";
 
-            // Interdire toute partie de l'email (avant et après @)
-            if (email && email.includes('@')) {
-                const [localPart, domainPart] = email.toLowerCase().split('@');
-                const tokens = localPart.split(/[._\-0-9]+/).filter(t => t.length >= 3);
-                if (localPart.length >= 3 && lowerPw.includes(localPart)) noInfoOk = false;
-                for (let token of tokens) {
-                    if (lowerPw.includes(token)) noInfoOk = false;
+                if (localPart.length >= 2 && lowerPw.includes(localPart)) {
+                    noPersonalOk = false;
                 }
-                if (domainPart) {
-                    const domainName = domainPart.split('.')[0];
-                    if (domainName && domainName.length >= 4 && lowerPw.includes(domainName)) {
-                        noInfoOk = false;
+                if (domainName.length >= 3 && lowerPw.includes(domainName)) {
+                    noPersonalOk = false;
+                }
+                const tokens = localPart.split(/[._\-0-9]+/).filter(t => t.length >= 3);
+                for (const token of tokens) {
+                    if (lowerPw.includes(token)) {
+                        noPersonalOk = false;
+                        break;
                     }
                 }
             }
 
-            return { lengthOk, upperOk, specialOk, noInfoOk, allValid: lengthOk && upperOk && specialOk && noInfoOk };
+            return {
+                lenOk,
+                upperOk,
+                specialOk,
+                noPersonalOk,
+                allValid: lenOk && upperOk && specialOk && noPersonalOk
+            };
         }
 
-        window.validatePasswordLive = function() {
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
-            document.getElementById('pw-char-count').textContent = password.length;
+        function validatePasswordLive() {
+            const email = document.getElementById("reg-email").value.trim();
+            const pw = document.getElementById("reg-password").value;
+            document.getElementById("pw-count").textContent = pw.length;
 
-            const rules = checkPasswordRules(email, password);
+            const res = checkPasswordRules(email, pw);
+            updateRuleUI("rule-len", res.lenOk, `Entre 16 et 32 caractères (${pw.length}/32)`);
+            updateRuleUI("rule-upper", res.upperOk, "Au moins une lettre majuscule (A-Z)");
+            updateRuleUI("rule-special", res.specialOk, "Au moins un caractère spécial (!@#$%^&*...)");
+            updateRuleUI("rule-nopersonal", res.noPersonalOk, "Aucune information personnelle issue de votre email");
+        }
 
-            updateRuleUI('rule-length', rules.lengthOk);
-            updateRuleUI('rule-upper', rules.upperOk);
-            updateRuleUI('rule-special', rules.specialOk);
-            updateRuleUI('rule-no-info', rules.noInfoOk);
-        };
+        function updateRuleUI(id, valid, label) {
+            const el = document.getElementById(id);
+            el.className = "pw-rule " + (valid ? "valid" : "invalid");
+            el.textContent = (valid ? "✓ " : "✕ ") + label;
+        }
 
-        function updateRuleUI(elementId, isValid) {
-            const el = document.getElementById(elementId);
-            const icon = el.querySelector('i');
-            if (isValid) {
-                el.classList.remove('text-zinc-500', 'text-red-400');
-                el.classList.add('text-emerald-400');
-                icon.classList.replace('fa-circle-xmark', 'fa-circle-check');
-            } else {
-                el.classList.remove('text-emerald-400');
-                el.classList.add('text-zinc-500');
-                icon.classList.replace('fa-circle-check', 'fa-circle-xmark');
+        function switchAuthView(view) {
+            document.getElementById("auth-view-login").classList.add("hidden");
+            document.getElementById("auth-view-register").classList.add("hidden");
+            document.getElementById("auth-view-verify").classList.add("hidden");
+
+            const title = document.getElementById("auth-modal-title");
+            if (view === "login") {
+                title.textContent = "Connexion à PuffZone 64";
+                document.getElementById("auth-view-login").classList.remove("hidden");
+            } else if (view === "register") {
+                title.textContent = "Créer un compte sécurisé";
+                document.getElementById("auth-view-register").classList.remove("hidden");
+                validatePasswordLive();
+            } else if (view === "verify") {
+                title.textContent = "Vérification par code";
+                document.getElementById("auth-view-verify").classList.remove("hidden");
             }
         }
 
-        // Soumission de l'inscription + Sauvegarde immédiate
-        window.handleRegister = async function(event) {
-            event.preventDefault();
-            const email = document.getElementById('reg-email').value.trim().toLowerCase();
-            const password = document.getElementById('reg-password').value;
+        async function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById("reg-email").value.trim().toLowerCase();
+            const password = document.getElementById("reg-password").value;
 
             if (email === ADMIN_EMAIL) {
                 showToast("Cet email est réservé à l'administrateur.", "error");
                 return;
             }
 
-            const existingUser = state.users.find(u => u.email === email);
-            if (existingUser && existingUser.verified) {
-                showToast("Un compte vérifié existe déjà avec cet email.", "error");
+            const existing = appState.users.find(u => u.email.toLowerCase() === email);
+            if (existing && existing.verified) {
+                showToast("Ce compte est déjà actif. Connectez-vous.", "error");
+                switchAuthView("login");
                 return;
             }
 
-            const validation = checkPasswordRules(email, password);
-            if (!validation.allValid) {
-                showToast("Votre mot de passe ne respecte pas toutes les règles de sécurité.", "error");
+            const rules = checkPasswordRules(email, password);
+            if (!rules.allValid) {
+                showToast("Le mot de passe ne respecte pas toutes les exigences de sécurité.", "error");
                 return;
             }
 
-            const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            const userRecord = {
-                id: sanitizeDocId(email),
+            // Génération secrète du code à 6 chiffres (jamais visible par le client)
+            const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            const nowStr = new Date().toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" });
+
+            const newAccount = {
                 email: email,
                 password: password,
+                isAdmin: false,
                 verified: false,
-                verificationCode: verificationCode,
-                createdAt: new Date().toLocaleString('fr-FR')
+                verificationCode: generatedCode,
+                adminMessage: `${email} a besoin d'un code de vérification`,
+                codeSentByAdmin: false,
+                createdAt: nowStr
             };
 
-            if (existingUser) {
-                Object.assign(existingUser, userRecord);
+            if (existing) {
+                Object.assign(existing, newAccount);
             } else {
-                state.users.push(userRecord);
+                appState.users.push(newAccount);
             }
 
-            await persistRecord('users', userRecord.id, userRecord);
-            refreshAllUI();
+            await saveState();
+            refreshUI();
 
-            // Préparation et déclenchement de l'email vers eneko640@outlook.fr
-            const subject = encodeURIComponent("Demande de code de vérification");
-            const body = encodeURIComponent(`${email} a besoin d’un ccode de vérification\n\nCode de validation : ${verificationCode}`);
-            const mailtoUrl = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
+            document.getElementById("verify-email").value = email;
+            document.getElementById("verify-quote-email").textContent = email;
 
-            document.getElementById('mailto-trigger-link').href = mailtoUrl;
-            document.getElementById('verify-email').value = email;
+            const mailSubject = encodeURIComponent("Demande de code de vérification PuffZone 64");
+            const mailBody = encodeURIComponent(`${email} a besoin d'un code de vérification`);
+            document.getElementById("client-mailto-admin").href = `mailto:${ADMIN_EMAIL}?subject=${mailSubject}&body=${mailBody}`;
 
-            window.location.href = mailtoUrl;
+            e.target.reset();
+            showToast(`Demande transmise à ${ADMIN_EMAIL} !`, "success");
+            switchAuthView("verify");
+        }
 
-            showToast(`Compte enregistré ! Demande envoyée à ${ADMIN_EMAIL}.`, "warning");
-            window.switchAuthView('verify');
-        };
+        async function handleVerifyCode(e) {
+            e.preventDefault();
+            const email = document.getElementById("verify-email").value.trim().toLowerCase();
+            const code = document.getElementById("verify-code").value.trim();
 
-        // Validation du code à 6 chiffres + Sauvegarde permanente du compte activé
-        window.handleVerifyCode = async function(event) {
-            event.preventDefault();
-            const email = document.getElementById('verify-email').value.trim().toLowerCase();
-            const code = document.getElementById('verify-code-input').value.trim();
-
-            const user = state.users.find(u => u.email === email);
+            const user = appState.users.find(u => u.email.toLowerCase() === email);
             if (!user) {
-                showToast("Aucune demande trouvée pour cet email.", "error");
+                showToast("Aucun compte trouvé avec cet email.", "error");
                 return;
             }
             if (user.verified) {
-                showToast("Ce compte est déjà vérifié. Vous pouvez vous connecter.", "info");
-                window.switchAuthView('login');
+                showToast("Ce compte est déjà vérifié !", "info");
+                switchAuthView("login");
                 return;
             }
-            if (user.verificationCode === code) {
-                user.verified = true;
-                user.verifiedAt = new Date().toLocaleString('fr-FR');
-                delete user.verificationCode;
-
-                await persistRecord('users', sanitizeDocId(user.email), user);
-                refreshAllUI();
-
-                showToast("Compte vérifié et sauvegardé ! Vous pouvez maintenant vous connecter.", "success");
-                document.getElementById('login-email').value = email;
-                window.switchAuthView('login');
-            } else {
+            if (user.verificationCode !== code) {
                 showToast("Code de vérification incorrect.", "error");
+                return;
             }
-        };
 
-        // Connexion (Admin ou Client vérifié)
-        window.handleLogin = function(event) {
-            event.preventDefault();
-            const email = document.getElementById('login-email').value.trim().toLowerCase();
-            const password = document.getElementById('login-password').value;
+            user.verified = true;
+            delete user.verificationCode;
+            await saveState();
+            saveSession(user);
+            refreshUI();
+            closeAllModals();
+            showToast("Compte activé et sauvegardé ! Bienvenue sur PuffZone 64.", "success");
+        }
 
-            const user = state.users.find(u => u.email === email);
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById("login-email").value.trim().toLowerCase();
+            const password = document.getElementById("login-password").value;
 
+            const user = appState.users.find(u => u.email.toLowerCase() === email);
             if (!user || user.password !== password) {
                 showToast("Email ou mot de passe incorrect.", "error");
                 return;
             }
 
             if (!user.verified) {
-                showToast("Votre compte n'est pas encore vérifié. Saisissez votre code.", "warning");
-                document.getElementById('verify-email').value = email;
-                window.switchAuthView('verify');
+                document.getElementById("verify-email").value = email;
+                document.getElementById("verify-quote-email").textContent = email;
+                showToast("Compte en attente du code de vérification de l'admin.", "error");
+                switchAuthView("verify");
                 return;
             }
 
-            state.currentUser = { email: user.email, isAdmin: user.email === ADMIN_EMAIL };
-            saveMirrorToLocal();
-            refreshAllUI();
-            window.closeAuthModal();
+            saveSession(user);
+            refreshUI();
+            closeAllModals();
 
-            if (state.currentUser.isAdmin) {
-                showToast("Bienvenue Administrateur Eneko !", "success");
-                window.showSection('admin');
+            if (isAuthenticatedAdmin()) {
+                showToast("Connecté en tant qu'Administrateur (eneko640@outlook.fr)", "success");
+                openAdminModal();
             } else {
-                showToast(`Ravi de vous revoir, ${user.email} !`, "success");
+                showToast(`Bienvenue ${user.email} !`, "success");
             }
-        };
-
-        window.handleLogout = function() {
-            state.currentUser = null;
-            saveMirrorToLocal();
-            refreshAllUI();
-            window.showSection('shop');
-            showToast("Vous avez été déconnecté.", "info");
-        };
-
-        // ==========================================
-        // 7. BOUTIQUE & PANIER CLIENT
-        // ==========================================
-        function renderShop() {
-            const grid = document.getElementById('products-grid');
-            const totalLabel = document.getElementById('products-total-label');
-            const locPreview = document.getElementById('shop-locations-preview');
-
-            totalLabel.textContent = `${state.products.length} modèle(s)`;
-            locPreview.textContent = state.locations.length > 0 
-                ? state.locations.map(l => l.label).join(' • ') 
-                : "Aucun lieu configuré pour le moment.";
-
-            if (state.products.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-500">Aucune Puff disponible actuellement.</div>`;
-                return;
-            }
-
-            grid.innerHTML = state.products.map(prod => {
-                const isOutOfStock = prod.stock <= 0;
-                return `
-                    <div class="glass-panel rounded-2xl overflow-hidden flex flex-col justify-between border border-zinc-800/80 hover:border-violet-500/40 transition group">
-                        <div>
-                            <div class="relative h-48 bg-zinc-900 overflow-hidden">
-                                <img src="${prod.image}" alt="${prod.name}" onerror="this.src='https://placehold.co/600x400/18181b/a78bfa?text=PuffZone'" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ${isOutOfStock ? 'opacity-40 grayscale' : ''}">
-                                <div class="absolute top-3 right-3">
-                                    ${isOutOfStock 
-                                        ? `<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-600/90 text-white shadow">Rupture de stock</span>`
-                                        : `<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-zinc-950/80 text-emerald-400 border border-emerald-500/30 backdrop-blur-md">En stock : ${prod.stock}</span>`
-                                    }
-                                </div>
-                            </div>
-                            <div class="p-5">
-                                <h3 class="font-bold text-base text-white mb-1 line-clamp-1">${prod.name}</h3>
-                                <p class="text-xs text-zinc-400 line-clamp-2 mb-4">${prod.desc || 'Saveur authentique • Prête à vaper'}</p>
-                            </div>
-                        </div>
-                        <div class="px-5 pb-5 pt-2 flex items-center justify-between border-t border-zinc-800/60">
-                            <span class="text-xl font-extrabold text-white">${Number(prod.price).toFixed(2)} €</span>
-                            <button onclick="addToCart('${prod.id}')" ${isOutOfStock ? 'disabled' : ''} class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${isOutOfStock ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' : 'bg-violet-600 hover:bg-violet-500 text-white shadow-md shadow-violet-600/20'}">
-                                <i class="fa-solid fa-cart-plus"></i> ${isOutOfStock ? 'Épuisé' : 'Ajouter'}
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
         }
 
-        window.addToCart = function(productId) {
-            const product = state.products.find(p => p.id === productId);
-            if (!product || product.stock <= 0) return;
+        function handleLogout() {
+            saveSession(null);
+            closeAllModals();
+            refreshUI();
+            showToast("Vous êtes déconnecté.", "info");
+        }
 
-            const existingItem = state.cart.find(item => item.productId === productId);
-            if (existingItem) {
-                if (existingItem.qty + 1 > product.stock) {
-                    showToast(`Stock maximum atteint (${product.stock} disponible(s)).`, "warning");
+        function handleAccountButtonClick() {
+            if (currentUser) {
+                handleLogout();
+            } else {
+                switchAuthView("login");
+                openModal("auth-modal");
+            }
+        }
+
+        // ====================================================================
+        // ESPACE ADMINISTRATEUR (PROTÉGÉ PAR isAuthenticatedAdmin())
+        // ====================================================================
+        function openAdminModal() {
+            if (!isAuthenticatedAdmin()) {
+                showToast("Accès non autorisé.", "error");
+                return;
+            }
+            renderAdminAll();
+            openModal("admin-modal");
+        }
+
+        function switchAdminTab(tab) {
+            if (!isAuthenticatedAdmin()) return;
+            ["inbox", "products", "locations", "records"].forEach(name => {
+                document.getElementById(`admin-panel-${name}`).classList.add("hidden");
+                document.getElementById(`tab-btn-${name}`).classList.remove("active");
+            });
+            document.getElementById(`admin-panel-${tab}`).classList.remove("hidden");
+            document.getElementById(`tab-btn-${tab}`).classList.add("active");
+        }
+
+        function copyCode(code, email) {
+            if (!isAuthenticatedAdmin()) return;
+            const tmp = document.createElement("input");
+            tmp.value = code;
+            document.body.appendChild(tmp);
+            tmp.select();
+            document.execCommand("copy");
+            document.body.removeChild(tmp);
+            showToast(`Code ${code} copié pour ${email} !`, "success");
+        }
+
+        async function markCodeAsSent(email) {
+            if (!isAuthenticatedAdmin()) return;
+            const u = appState.users.find(x => x.email.toLowerCase() === email.toLowerCase());
+            if (u) {
+                u.codeSentByAdmin = true;
+                await saveState();
+                renderAdminAll();
+            }
+        }
+
+        async function adminActivateUser(email) {
+            if (!isAuthenticatedAdmin()) return;
+            const u = appState.users.find(x => x.email.toLowerCase() === email.toLowerCase());
+            if (!u) return;
+            u.verified = true;
+            delete u.verificationCode;
+            await saveState();
+            refreshUI();
+            renderAdminAll();
+            showToast(`Le compte ${email} a été activé et sauvegardé !`, "success");
+        }
+
+        function compressImageFile(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement("canvas");
+                        const maxW = 520;
+                        const scale = Math.min(1, maxW / img.width);
+                        canvas.width = img.width * scale;
+                        canvas.height = img.height * scale;
+                        const ctx = canvas.getContext("2d");
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL("image/jpeg", 0.78));
+                    };
+                    img.onerror = () => resolve(ev.target.result);
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleAdminAddProduct(e) {
+            e.preventDefault();
+            if (!isAuthenticatedAdmin()) return;
+
+            const name = document.getElementById("new-prod-name").value.trim();
+            const desc = document.getElementById("new-prod-desc").value.trim();
+            const price = parseFloat(document.getElementById("new-prod-price").value);
+            const stock = parseInt(document.getElementById("new-prod-stock").value, 10);
+            const fileInput = document.getElementById("new-prod-file");
+            const urlInput = document.getElementById("new-prod-url").value.trim();
+
+            let imageData = `https://placehold.co/600x400/0f172a/38bdf8?text=${encodeURIComponent(name.slice(0, 18))}`;
+            if (fileInput.files && fileInput.files[0]) {
+                imageData = await compressImageFile(fileInput.files[0]);
+            } else if (urlInput) {
+                imageData = urlInput;
+            }
+
+            appState.products.unshift({
+                id: "puff-" + Date.now(),
+                name,
+                desc,
+                price: isNaN(price) ? 15 : price,
+                stock: isNaN(stock) ? 1 : stock,
+                image: imageData
+            });
+
+            await saveState();
+            e.target.reset();
+            refreshUI();
+            renderAdminAll();
+            showToast(`Offre "${name}" ajoutée et sauvegardée !`, "success");
+        }
+
+        async function handleAdminStockChange(productId, delta) {
+            if (!isAuthenticatedAdmin()) return;
+            const prod = appState.products.find(p => p.id === productId);
+            if (!prod) return;
+            prod.stock = Math.max(0, prod.stock + delta);
+            await saveState();
+            refreshUI();
+            renderAdminAll();
+            showToast(`Stock mis à jour : ${prod.name} (${prod.stock} restants)`, "info");
+        }
+
+        async function handleAdminDeleteProduct(productId) {
+            if (!isAuthenticatedAdmin()) return;
+            appState.products = appState.products.filter(p => p.id !== productId);
+            await saveState();
+            refreshUI();
+            renderAdminAll();
+            showToast("Offre supprimée et sauvegardée.", "info");
+        }
+
+        async function handleAdminAddLocation(e) {
+            e.preventDefault();
+            if (!isAuthenticatedAdmin()) return;
+            const input = document.getElementById("new-location-input");
+            const loc = input.value.trim();
+            if (!loc) return;
+            if (!appState.locations.includes(loc)) {
+                appState.locations.push(loc);
+                await saveState();
+                refreshUI();
+                renderAdminAll();
+                showToast(`Lieu "${loc}" ajouté et sauvegardé !`, "success");
+            }
+            input.value = "";
+        }
+
+        async function handleAdminDeleteLocation(index) {
+            if (!isAuthenticatedAdmin()) return;
+            const removed = appState.locations.splice(index, 1);
+            await saveState();
+            refreshUI();
+            renderAdminAll();
+            showToast(`Lieu "${removed[0]}" retiré.`, "info");
+        }
+
+        // ====================================================================
+        // PANIER & DÉDUCTION AUTOMATIQUE DU STOCK À L'ACHAT
+        // ====================================================================
+        function addToCart(productId) {
+            const prod = appState.products.find(p => p.id === productId);
+            if (!prod || prod.stock <= 0) {
+                showToast("Ce produit est en rupture de stock.", "error");
+                return;
+            }
+            const existing = cart.find(item => item.productId === productId);
+            if (existing) {
+                if (existing.qty >= prod.stock) {
+                    showToast(`Stock maximum atteint (${prod.stock} disponible(s)).`, "error");
                     return;
                 }
-                existingItem.qty += 1;
+                existing.qty += 1;
             } else {
-                state.cart.push({ productId: product.id, qty: 1 });
+                cart.push({ productId: prod.id, qty: 1 });
             }
+            updateCartBadge();
+            showToast(`"${prod.name}" ajouté au panier !`, "success");
+        }
 
-            updateCartUI();
-            showToast(`"${product.name}" ajouté au panier !`, "success");
-        };
+        function changeCartQty(productId, delta) {
+            const item = cart.find(c => c.productId === productId);
+            const prod = appState.products.find(p => p.id === productId);
+            if (!item || !prod) return;
 
-        window.updateCartQty = function(productId, delta) {
-            const item = state.cart.find(i => i.productId === productId);
-            const product = state.products.find(p => p.id === productId);
-            if (!item || !product) return;
-
-            const newQty = item.qty + delta;
-            if (newQty <= 0) {
-                state.cart = state.cart.filter(i => i.productId !== productId);
-            } else if (newQty <= product.stock) {
-                item.qty = newQty;
+            const nextQty = item.qty + delta;
+            if (nextQty <= 0) {
+                cart = cart.filter(c => c.productId !== productId);
+            } else if (nextQty > prod.stock) {
+                showToast(`Seulement ${prod.stock} en stock.`, "error");
+                return;
             } else {
-                showToast(`Stock disponible limité à ${product.stock}.`, "warning");
+                item.qty = nextQty;
             }
-            updateCartUI();
-        };
+            updateCartBadge();
+            renderCartModal();
+        }
 
-        function updateCartUI() {
-            const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
-            document.getElementById('cart-count').textContent = totalItems;
+        function openCartModal() {
+            renderCartModal();
+            openModal("cart-modal");
+        }
 
-            const container = document.getElementById('cart-items-container');
-            const totalPriceEl = document.getElementById('cart-total-price');
-            const locSelect = document.getElementById('checkout-location-select');
+        function renderCartModal() {
+            const container = document.getElementById("cart-items-container");
+            const checkoutSec = document.getElementById("cart-checkout-section");
 
-            locSelect.innerHTML = state.locations.length > 0
-                ? state.locations.map(loc => `<option value="${loc.label}">${loc.label}</option>`).join('')
-                : `<option value="">Aucun lieu de retrait disponible</option>`;
-
-            if (state.cart.length === 0) {
-                container.innerHTML = `<div class="text-center py-10 text-zinc-500 text-sm">Votre panier est vide.</div>`;
-                totalPriceEl.textContent = "0.00 €";
+            if (cart.length === 0) {
+                container.innerHTML = `<div style="text-align:center;padding:28px 10px;color:#94a3b8;">Votre panier est vide.</div>`;
+                checkoutSec.classList.add("hidden");
                 return;
             }
 
             let total = 0;
-            container.innerHTML = state.cart.map(item => {
-                const prod = state.products.find(p => p.id === item.productId);
-                if (!prod) return '';
-                const subtotal = prod.price * item.qty;
-                total += subtotal;
-
+            container.innerHTML = cart.map(item => {
+                const prod = appState.products.find(p => p.id === item.productId);
+                if (!prod) return "";
+                const sub = prod.price * item.qty;
+                total += sub;
                 return `
-                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-zinc-900/90 border border-zinc-800">
-                        <img src="${prod.image}" class="w-12 h-12 rounded-lg object-cover shrink-0" alt="">
-                        <div class="flex-grow min-w-0">
-                            <h4 class="text-xs font-bold text-white truncate">${prod.name}</h4>
-                            <p class="text-xs text-cyan-400 font-semibold">${Number(prod.price).toFixed(2)} €</p>
+                    <div class="cart-row">
+                        <div style="flex:1;">
+                            <div style="font-weight:700;font-size:0.9rem;">${prod.name}</div>
+                            <div style="font-size:0.78rem;color:#38bdf8;">${prod.price.toFixed(2)} € / unité</div>
                         </div>
-                        <div class="flex items-center gap-2 bg-zinc-950 px-2 py-1 rounded-lg border border-zinc-800">
-                            <button onclick="updateCartQty('${prod.id}', -1)" class="text-zinc-400 hover:text-white px-1">-</button>
-                            <span class="text-xs font-bold text-white w-4 text-center">${item.qty}</span>
-                            <button onclick="updateCartQty('${prod.id}', 1)" class="text-zinc-400 hover:text-white px-1">+</button>
+                        <div class="qty-controls">
+                            <button type="button" onclick="changeCartQty('${prod.id}', -1)" style="font-weight:800;padding:2px 6px;">−</button>
+                            <span style="font-weight:700;min-width:18px;text-align:center;">${item.qty}</span>
+                            <button type="button" onclick="changeCartQty('${prod.id}', 1)" style="font-weight:800;padding:2px 6px;">+</button>
                         </div>
                     </div>
                 `;
-            }).join('');
+            }).join("");
 
-            totalPriceEl.textContent = `${total.toFixed(2)} €`;
+            const locSelect = document.getElementById("cart-pickup-select");
+            locSelect.innerHTML = appState.locations.length > 0
+                ? appState.locations.map(l => `<option value="${l}">${l}</option>`).join("")
+                : `<option value="À définir avec l'admin">À définir avec l'admin</option>`;
+
+            document.getElementById("cart-total-price").textContent = `${total.toFixed(2)} €`;
+            checkoutSec.classList.remove("hidden");
         }
 
-        window.toggleCartModal = function() {
-            const modal = document.getElementById('cart-modal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                updateCartUI();
-            }
-        };
-
-        // Validation de l'achat, déduction du stock et sauvegarde immédiate
-        window.handleCheckout = async function() {
-            if (!state.currentUser) {
-                window.toggleCartModal();
-                showToast("Veuillez vous connecter ou créer un compte pour commander.", "warning");
-                window.openAuthModal('login');
+        async function checkoutCart() {
+            if (!currentUser || !currentUser.verified) {
+                showToast("Connectez-vous à votre compte vérifié pour réserver.", "error");
+                switchAuthView("login");
+                openModal("auth-modal");
                 return;
             }
+            if (cart.length === 0) return;
 
-            if (state.cart.length === 0) {
-                showToast("Votre panier est vide.", "error");
-                return;
-            }
+            const pickupLocation = document.getElementById("cart-pickup-select").value;
+            let orderSummary = [];
+            let total = 0;
 
-            const selectedLocation = document.getElementById('checkout-location-select').value;
-            if (!selectedLocation) {
-                showToast("Veuillez sélectionner un lieu de retrait.", "error");
-                return;
-            }
-
-            let orderItems = [];
-            let orderTotal = 0;
-
-            for (let item of state.cart) {
-                const prod = state.products.find(p => p.id === item.productId);
+            for (const item of cart) {
+                const prod = appState.products.find(p => p.id === item.productId);
                 if (!prod || prod.stock < item.qty) {
-                    showToast(`Stock insuffisant pour ${prod ? prod.name : 'un produit'}.`, "error");
+                    showToast(`Stock insuffisant pour ${prod ? prod.name : "un produit"}.`, "error");
                     return;
                 }
-                // Retirer du stock (par 1 pour chaque unité achetée)
                 prod.stock -= item.qty;
-                await persistRecord('products', prod.id, prod);
-
-                orderItems.push({ name: prod.name, qty: item.qty, price: prod.price });
-                orderTotal += prod.price * item.qty;
+                total += prod.price * item.qty;
+                orderSummary.push(`${item.qty}x ${prod.name}`);
             }
 
-            const newOrder = {
-                id: 'CMD-' + Math.floor(1000 + Math.random() * 9000),
-                customer: state.currentUser.email,
-                location: selectedLocation,
-                items: orderItems,
-                total: orderTotal,
-                date: new Date().toLocaleString('fr-FR'),
-                timestamp: Date.now()
-            };
-
-            state.orders.unshift(newOrder);
-            await persistRecord('orders', newOrder.id, newOrder);
-
-            state.cart = [];
-            refreshAllUI();
-            window.toggleCartModal();
-
-            showToast(`Commande confirmée et sauvegardée ! Retrait à : ${selectedLocation}.`, "success");
-        };
-
-        // ==========================================
-        // 8. PANNEAU ADMINISTRATEUR (ENEKO)
-        // ==========================================
-        window.switchAdminTab = function(tabName) {
-            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-                btn.classList.remove('bg-violet-600', 'text-white');
-                btn.classList.add('bg-zinc-800/70', 'text-zinc-300');
+            appState.orders.unshift({
+                id: "CMD-" + Math.floor(1000 + Math.random() * 9000),
+                customerEmail: currentUser.email,
+                items: orderSummary.join(", "),
+                pickupLocation,
+                total: total.toFixed(2),
+                date: new Date().toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })
             });
-            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-            activeBtn.classList.remove('bg-zinc-800/70', 'text-zinc-300');
-            activeBtn.classList.add('bg-violet-600', 'text-white');
 
-            ['products', 'locations', 'verifications', 'users', 'orders'].forEach(t => {
-                document.getElementById(`admin-tab-${t}`).classList.add('hidden');
-            });
-            document.getElementById(`admin-tab-${tabName}`).classList.remove('hidden');
-            renderAdminDashboard();
-        };
+            cart = [];
+            await saveState();
+            refreshUI();
+            closeAllModals();
+            showToast(`Réservation confirmée (${pickupLocation}) ! Le stock a été mis à jour.`, "success");
+        }
 
-        // Compression d'image locale pour une sauvegarde fluide et rapide
-        window.previewAdminImage = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imgObj = new Image();
-                imgObj.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const maxW = 500;
-                    const scale = Math.min(1, maxW / imgObj.width);
-                    canvas.width = imgObj.width * scale;
-                    canvas.height = imgObj.height * scale;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(imgObj, 0, 0, canvas.width, canvas.height);
+        // ====================================================================
+        // RENDU DE L'INTERFACE
+        // ====================================================================
+        function updateCartBadge() {
+            const count = cart.reduce((acc, item) => acc + item.qty, 0);
+            document.getElementById("header-cart-badge").textContent = count;
+        }
 
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
-                    state.uploadedBase64Image = compressedDataUrl;
-                    const previewEl = document.getElementById('admin-img-preview');
-                    previewEl.src = compressedDataUrl;
-                    previewEl.classList.remove('hidden');
-                };
-                imgObj.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        };
+        function renderProducts() {
+            const query = document.getElementById("search-input").value.trim().toLowerCase();
+            const grid = document.getElementById("products-grid");
 
-        window.handleAddProduct = async function(event) {
-            event.preventDefault();
-            const name = document.getElementById('prod-name').value.trim();
-            const desc = document.getElementById('prod-desc').value.trim();
-            const price = parseFloat(document.getElementById('prod-price').value);
-            const stock = parseInt(document.getElementById('prod-stock').value, 10);
-            const urlInput = document.getElementById('prod-image-url').value.trim();
+            const filtered = appState.products.filter(p =>
+                p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query)
+            );
 
-            const finalImage = state.uploadedBase64Image || urlInput || 'https://placehold.co/600x400/18181b/a78bfa?text=PuffZone';
-
-            const newProd = {
-                id: 'prod-' + Date.now(),
-                name,
-                desc,
-                price,
-                stock,
-                image: finalImage
-            };
-
-            state.products.unshift(newProd);
-            await persistRecord('products', newProd.id, newProd);
-
-            event.target.reset();
-            state.uploadedBase64Image = null;
-            document.getElementById('admin-img-preview').classList.add('hidden');
-            refreshAllUI();
-            showToast(`Offre "${name}" ajoutée et sauvegardée sur le site !`, "success");
-        };
-
-        window.adjustAdminStock = async function(productId, delta) {
-            const prod = state.products.find(p => p.id === productId);
-            if (!prod) return;
-            prod.stock = Math.max(0, prod.stock + delta);
-            await persistRecord('products', prod.id, prod);
-            refreshAllUI();
-        };
-
-        window.deleteAdminProduct = async function(productId) {
-            state.products = state.products.filter(p => p.id !== productId);
-            await removeRecord('products', productId);
-            refreshAllUI();
-            showToast("Produit supprimé et mis à jour.", "info");
-        };
-
-        window.handleAddLocation = async function(event) {
-            event.preventDefault();
-            const input = document.getElementById('new-location-input');
-            const val = input.value.trim();
-            if (!val) return;
-
-            if (state.locations.some(l => l.label.toLowerCase() === val.toLowerCase())) {
-                showToast("Ce lieu existe déjà.", "warning");
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8;">Aucune Puff ne correspond à votre recherche.</div>`;
                 return;
             }
 
-            const newLoc = {
-                id: 'loc-' + Date.now(),
-                label: val
-            };
+            grid.innerHTML = filtered.map(prod => {
+                let stockClass = "stock-ok";
+                let stockText = `${prod.stock} en stock`;
+                if (prod.stock === 0) {
+                    stockClass = "stock-out";
+                    stockText = "Rupture de stock";
+                } else if (prod.stock <= 3) {
+                    stockClass = "stock-low";
+                    stockText = `Plus que ${prod.stock} !`;
+                }
 
-            state.locations.push(newLoc);
-            await persistRecord('pickup_locations', newLoc.id, newLoc);
-
-            input.value = '';
-            refreshAllUI();
-            showToast(`Lieu "${val}" ajouté et sauvegardé !`, "success");
-        };
-
-        window.deleteLocation = async function(locId) {
-            const target = state.locations.find(l => l.id === locId);
-            state.locations = state.locations.filter(l => l.id !== locId);
-            await removeRecord('pickup_locations', locId);
-            refreshAllUI();
-            showToast(`Lieu "${target ? target.label : ''}" retiré.`, "info");
-        };
-
-        window.adminForceVerifyUser = async function(email) {
-            const user = state.users.find(u => u.email === email);
-            if (!user) return;
-            user.verified = true;
-            user.verifiedAt = new Date().toLocaleString('fr-FR');
-            delete user.verificationCode;
-            await persistRecord('users', sanitizeDocId(user.email), user);
-            refreshAllUI();
-            showToast(`Le compte ${email} a été activé et sauvegardé !`, "success");
-        };
-
-        function renderAdminDashboard() {
-            // 1. Liste Produits
-            const prodList = document.getElementById('admin-products-list');
-            prodList.innerHTML = state.products.map(p => `
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
-                    <div class="flex items-center gap-3">
-                        <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover shrink-0" alt="">
-                        <div>
-                            <h4 class="text-sm font-bold text-white">${p.name}</h4>
-                            <p class="text-xs text-zinc-400">${Number(p.price).toFixed(2)} € • Stock : <strong class="${p.stock === 0 ? 'text-red-400' : 'text-emerald-400'}">${p.stock}</strong></p>
+                return `
+                    <article class="product-card">
+                        <div class="product-img-wrap">
+                            <img src="${prod.image}" alt="${prod.name}" onerror="this.src='https://placehold.co/600x400/0f172a/38bdf8?text=PuffZone+64'">
+                            <span class="stock-badge ${stockClass}">${stockText}</span>
                         </div>
-                    </div>
-                    <div class="flex items-center gap-2 self-end sm:self-center">
-                        <button onclick="adjustAdminStock('${p.id}', -1)" title="Retirer 1 du stock" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold">-1</button>
-                        <button onclick="adjustAdminStock('${p.id}', 1)" title="Ajouter 1 au stock" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold">+1</button>
-                        <button onclick="deleteAdminProduct('${p.id}')" title="Supprimer l'offre" class="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-
-            // 2. Liste Lieux de retrait
-            const locList = document.getElementById('admin-locations-list');
-            locList.innerHTML = state.locations.length > 0 
-                ? state.locations.map(loc => `
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-900/90 border border-zinc-800">
-                        <span class="text-sm text-zinc-200"><i class="fa-solid fa-location-dot text-cyan-400 mr-2"></i>${loc.label}</span>
-                        <button onclick="deleteLocation('${loc.id}')" class="text-red-400 hover:text-red-300 text-xs font-semibold px-2.5 py-1 rounded-lg bg-red-500/10">
-                            Retirer
-                        </button>
-                    </div>
-                `).join('')
-                : `<p class="text-xs text-zinc-500">Aucun lieu de retrait enregistré.</p>`;
-
-            // 3. Demandes de codes de vérification
-            const pendingUsers = state.users.filter(u => !u.verified);
-            const tabBadge = document.getElementById('tab-verif-badge');
-            if (pendingUsers.length > 0) {
-                tabBadge.textContent = pendingUsers.length;
-                tabBadge.classList.remove('hidden');
-            } else {
-                tabBadge.classList.add('hidden');
-            }
-
-            const verifList = document.getElementById('admin-verifications-list');
-            verifList.innerHTML = pendingUsers.length > 0
-                ? pendingUsers.map(u => `
-                    <div class="p-4 rounded-xl bg-amber-500/5 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div>
-                            <p class="text-sm font-bold text-white">${u.email} <span class="text-xs font-normal text-zinc-400">a besoin d’un ccode de vérification</span></p>
-                            <p class="text-xs text-zinc-400 mt-0.5">Demande enregistrée le : ${u.createdAt || 'Aujourd\'hui'}</p>
+                        <div class="product-body">
+                            <h3 class="product-title">${prod.name}</h3>
+                            <p class="product-desc">${prod.desc}</p>
+                            <div class="product-footer">
+                                <span class="product-price">${Number(prod.price).toFixed(2)} €</span>
+                                <button type="button" class="btn-add-cart" ${prod.stock <= 0 ? "disabled" : ""} onclick="addToCart('${prod.id}')">
+                                    ${prod.stock <= 0 ? "Épuisé" : "+ Ajouter"}
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="px-3 py-1.5 rounded-lg bg-zinc-950 border border-amber-500/40 font-mono text-base font-bold text-amber-400 tracking-widest">
-                                ${u.verificationCode}
-                            </span>
-                            <a href="mailto:${u.email}?subject=${encodeURIComponent('Votre code de vérification PuffZone')}&body=${encodeURIComponent('Bonjour, voici votre code de vérification : ' + u.verificationCode)}" class="px-3 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold">
-                                <i class="fa-solid fa-reply mr-1"></i>Envoyer par mail
-                            </a>
-                            <button onclick="adminForceVerifyUser('${u.email}')" class="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">
-                                Activer directement
-                            </button>
-                        </div>
-                    </div>
-                `).join('')
-                : `<p class="text-xs text-zinc-500">Aucune demande de code en attente.</p>`;
-
-            // 4. Liste complète des comptes sauvegardés
-            const usersList = document.getElementById('admin-users-list');
-            usersList.innerHTML = state.users.map(u => `
-                <div class="flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
-                    <div>
-                        <p class="text-sm font-bold text-white">${u.email} ${u.email === ADMIN_EMAIL ? '<span class="ml-2 text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">ADMIN</span>' : ''}</p>
-                        <p class="text-xs text-zinc-500">Créé : ${u.createdAt || 'Initial'}</p>
-                    </div>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded-lg ${u.verified ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
-                        ${u.verified ? 'Vérifié ✓' : 'En attente de code'}
-                    </span>
-                </div>
-            `).join('');
-
-            // 5. Commandes clients
-            const ordersList = document.getElementById('admin-orders-list');
-            ordersList.innerHTML = state.orders.length > 0
-                ? state.orders.map(o => `
-                    <div class="p-4 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-2">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <span class="text-xs font-bold text-violet-400">${o.id} • ${o.date}</span>
-                            <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                                <i class="fa-solid fa-location-dot mr-1"></i>${o.location}
-                            </span>
-                        </div>
-                        <p class="text-xs text-zinc-300">Client : <strong>${o.customer}</strong></p>
-                        <div class="text-xs text-zinc-400 border-t border-zinc-800 pt-2">
-                            ${o.items.map(i => `<div>• ${i.qty}x ${i.name} (${(i.price * i.qty).toFixed(2)} €)</div>`).join('')}
-                        </div>
-                        <div class="text-right text-sm font-bold text-white">Total : ${Number(o.total).toFixed(2)} €</div>
-                    </div>
-                `).join('')
-                : `<p class="text-xs text-zinc-500">Aucune commande enregistrée pour le moment.</p>`;
+                    </article>
+                `;
+            }).join("");
         }
 
-        // Lancement au chargement de la page
-        window.addEventListener('DOMContentLoaded', () => {
-            initDatabase();
+        function renderAdminAll() {
+            if (!isAuthenticatedAdmin()) return;
+
+            const pending = appState.users.filter(u => !u.verified);
+            const inboxList = document.getElementById("admin-inbox-list");
+
+            if (pending.length === 0) {
+                inboxList.innerHTML = `<div style="text-align:center;padding:28px;color:#94a3b8;">Aucune demande de création de compte en attente.</div>`;
+            } else {
+                inboxList.innerHTML = pending.map(u => {
+                    const subject = encodeURIComponent("Votre code de vérification PuffZone 64");
+                    const body = encodeURIComponent(
+                        `Bonjour,\n\nSuite à votre demande ("${u.email} a besoin d'un code de vérification"), voici votre code unique pour activer votre compte sur PuffZone 64 :\n\nCode de vérification : ${u.verificationCode}\n\nSaisissez ce code sur le site pour finaliser votre inscription.`
+                    );
+                    const mailtoLink = `mailto:${u.email}?subject=${subject}&body=${body}`;
+
+                    return `
+                        <div class="inbox-item ${u.codeSentByAdmin ? "sent" : ""}">
+                            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center;">
+                                <span style="font-size:0.74rem;font-weight:800;padding:3px 9px;border-radius:999px;background:${u.codeSentByAdmin ? "rgba(56,189,248,0.18)" : "rgba(245,158,11,0.2)"};color:${u.codeSentByAdmin ? "#38bdf8" : "#fbbf24"};">
+                                    ${u.codeSentByAdmin ? "Code envoyé par email ✓" : "Nouvelle demande reçue"}
+                                </span>
+                                <span style="font-size:0.75rem;color:#94a3b8;">${u.createdAt || ""}</span>
+                            </div>
+
+                            <div style="font-size:0.88rem;">
+                                <div style="color:#cbd5e1;"><strong>Message :</strong> "${u.email} a besoin d'un code de vérification"</div>
+                                <div style="margin-top:4px;color:#94a3b8;"><strong>Email auquel envoyer le code :</strong> <span style="color:#38bdf8;font-weight:700;">${u.email}</span></div>
+                            </div>
+
+                            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+                                <div class="code-box">
+                                    <div>
+                                        <div style="font-size:0.65rem;text-transform:uppercase;color:#94a3b8;">Code généré</div>
+                                        <div class="code-digits">${u.verificationCode}</div>
+                                    </div>
+                                    <button type="button" class="btn-sm btn-dark" onclick="copyCode('${u.verificationCode}', '${u.email}')">📋 Copier</button>
+                                </div>
+
+                                <div class="action-row">
+                                    <a href="${mailtoLink}" onclick="markCodeAsSent('${u.email}')" class="btn-sm btn-violet">
+                                        ✉️ Envoyer à ${u.email}
+                                    </a>
+                                    <button type="button" class="btn-sm btn-green" onclick="adminActivateUser('${u.email}')">
+                                        ✓ Activer directement
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+            }
+
+            const prodList = document.getElementById("admin-products-list");
+            prodList.innerHTML = appState.products.map(p => `
+                <div class="admin-list-row">
+                    <div style="display:flex;align-items:center;gap:12px;flex:1 1 220px;">
+                        <img src="${p.image}" alt="${p.name}" style="width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0;">
+                        <div>
+                            <div style="font-weight:700;font-size:0.9rem;">${p.name}</div>
+                            <div style="font-size:0.78rem;color:#38bdf8;">${Number(p.price).toFixed(2)} € • Stock : <strong>${p.stock}</strong></div>
+                        </div>
+                    </div>
+                    <div class="action-row">
+                        <button type="button" class="btn-sm btn-dark" onclick="handleAdminStockChange('${p.id}', -1)">− 1 Stock</button>
+                        <button type="button" class="btn-sm btn-cyan" onclick="handleAdminStockChange('${p.id}', 1)">+ 1 Stock</button>
+                        <button type="button" class="btn-sm btn-red" onclick="handleAdminDeleteProduct('${p.id}')">Supprimer</button>
+                    </div>
+                </div>
+            `).join("");
+
+            const locList = document.getElementById("admin-locations-list");
+            locList.innerHTML = appState.locations.length === 0
+                ? `<div style="color:#94a3b8;font-size:0.85rem;">Aucun lieu de retrait enregistré.</div>`
+                : appState.locations.map((loc, idx) => `
+                    <div class="admin-list-row">
+                        <span style="font-weight:600;font-size:0.88rem;">📍 ${loc}</span>
+                        <button type="button" class="btn-sm btn-red" onclick="handleAdminDeleteLocation(${idx})">Retirer</button>
+                    </div>
+                `).join("");
+
+            const ordersList = document.getElementById("admin-orders-list");
+            ordersList.innerHTML = appState.orders.length === 0
+                ? `<div style="color:#94a3b8;font-size:0.84rem;">Aucune commande enregistrée pour le moment.</div>`
+                : appState.orders.map(o => `
+                    <div class="admin-list-row">
+                        <div>
+                            <div style="font-weight:700;font-size:0.86rem;">${o.id} — ${o.customerEmail} (${o.total} €)</div>
+                            <div style="font-size:0.78rem;color:#cbd5e1;">Articles : ${o.items}</div>
+                            <div style="font-size:0.76rem;color:#38bdf8;">📍 Retrait : ${o.pickupLocation} • ${o.date}</div>
+                        </div>
+                    </div>
+                `).join("");
+
+            const usersList = document.getElementById("admin-users-list");
+            usersList.innerHTML = appState.users.map(u => `
+                <div class="admin-list-row">
+                    <div>
+                        <div style="font-weight:700;font-size:0.86rem;">${u.email} ${u.isAdmin ? "(Administrateur)" : ""}</div>
+                        <div style="font-size:0.75rem;color:${u.verified ? "#34d399" : "#fbbf24"};">
+                            ${u.verified ? "Compte vérifié et actif ✓" : "En attente de vérification"}
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function refreshUI() {
+            const adminBtn = document.getElementById("header-admin-btn");
+            const saveBadge = document.getElementById("save-status-badge");
+            const pendingCount = appState.users.filter(u => !u.verified).length;
+            const headerInboxBadge = document.getElementById("header-inbox-badge");
+            const tabInboxCount = document.getElementById("tab-inbox-count");
+
+            // AFFICHAGE STRICTEMENT RÉSERVÉ À L'ADMINISTRATEUR AUTHENTIFIÉ
+            if (isAuthenticatedAdmin()) {
+                adminBtn.classList.add("admin-authenticated");
+                saveBadge.classList.add("visible");
+                if (pendingCount > 0) {
+                    headerInboxBadge.textContent = pendingCount;
+                    headerInboxBadge.classList.remove("hidden");
+                } else {
+                    headerInboxBadge.classList.add("hidden");
+                }
+                tabInboxCount.textContent = pendingCount;
+            } else {
+                adminBtn.classList.remove("admin-authenticated");
+                saveBadge.classList.remove("visible");
+                headerInboxBadge.classList.add("hidden");
+            }
+
+            const accBtn = document.getElementById("header-account-btn");
+            const sessionBanner = document.getElementById("session-banner");
+
+            if (currentUser) {
+                accBtn.textContent = "🚪 Déconnexion";
+                if (isAuthenticatedAdmin()) {
+                    sessionBanner.innerHTML = `<span>Admin : <strong style="color:#fbbf24;">${currentUser.email}</strong></span>`;
+                } else {
+                    sessionBanner.innerHTML = `<span>Client : <strong style="color:#38bdf8;">${currentUser.email}</strong></span>`;
+                }
+            } else {
+                accBtn.textContent = "👤 Connexion / Créer";
+                sessionBanner.innerHTML = `<span>Visiteur — <button type="button" onclick="switchAuthView('register');openModal('auth-modal')" style="color:#38bdf8;font-weight:700;text-decoration:underline;">Créer un compte</button></span>`;
+            }
+
+            const heroLocs = document.getElementById("hero-locations-list");
+            heroLocs.innerHTML = appState.locations.map(l => `<span class="pickup-pill">📍 ${l}</span>`).join("");
+
+            updateCartBadge();
+            renderProducts();
+        }
+
+        // Exposition globale des handlers HTML
+        Object.assign(window, {
+            closeAllModals,
+            closeModal,
+            openModal,
+            openAdminModal,
+            openCartModal,
+            handleAccountButtonClick,
+            switchAuthView,
+            validatePasswordLive,
+            handleRegister,
+            handleVerifyCode,
+            handleLogin,
+            handleLogout,
+            switchAdminTab,
+            copyCode,
+            markCodeAsSent,
+            adminActivateUser,
+            handleAdminAddProduct,
+            handleAdminStockChange,
+            handleAdminDeleteProduct,
+            handleAdminAddLocation,
+            handleAdminDeleteLocation,
+            addToCart,
+            changeCartQty,
+            checkoutCart,
+            renderProducts
+        });
+
+        window.addEventListener("DOMContentLoaded", () => {
+            refreshUI();
+            initCloudStorage();
         });
     </script>
 </body>
