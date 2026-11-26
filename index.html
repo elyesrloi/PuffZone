@@ -1,0 +1,1509 @@
+```html
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PuffZone 64 | Boutique Officielle</title>
+    <!-- Chargement de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Police Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icônes FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            neon: '#06b6d4'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .neon-glow {
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.22);
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-violet-500 selection:text-white">
+
+    <!-- Zone de notifications (Toasts) -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Barre de navigation -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+            <!-- Logo & Indicateur de sauvegarde -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="showSection('shop')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-violet-500/20 shrink-0">
+                        <i class="fa-solid fa-cloud-bolt text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">PuffZone</span>
+                        <span class="text-[11px] block text-cyan-400 font-medium -mt-1">Click & Collect 64</span>
+                    </div>
+                </div>
+
+                <!-- Badge d'état de sauvegarde en temps réel -->
+                <div id="sync-status-badge" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all">
+                    <i class="fa-solid fa-cloud-check"></i>
+                    <span id="sync-status-text">Sauvegardé ✓</span>
+                </div>
+            </div>
+
+            <!-- Navigation & Actions -->
+            <nav class="flex items-center gap-2 sm:gap-3">
+                <button onclick="showSection('shop')" class="px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800/60 transition">
+                    <i class="fa-solid fa-store mr-1.5 text-violet-400"></i><span class="hidden sm:inline">Boutique</span>
+                </button>
+
+                <!-- Bouton Admin (Visible uniquement si connecté en tant qu'admin) -->
+                <button id="nav-admin-btn" onclick="showSection('admin')" class="hidden px-3 py-2 rounded-xl text-sm font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 transition relative">
+                    <i class="fa-solid fa-shield-halved mr-1.5"></i>Admin
+                    <span id="admin-badge-count" class="hidden absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+
+                <!-- Panier -->
+                <button onclick="toggleCartModal()" class="relative p-2.5 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 transition">
+                    <i class="fa-solid fa-bag-shopping text-lg"></i>
+                    <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-violet-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+                </button>
+
+                <!-- Compte / Connexion -->
+                <div id="auth-nav-area">
+                    <button onclick="openAuthModal('login')" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-md shadow-violet-600/20 transition">
+                        <i class="fa-solid fa-user mr-1.5"></i>Connexion
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- SECTION BOUTIQUE -->
+        <section id="section-shop" class="space-y-8">
+            <!-- Bannière Hero -->
+            <div class="relative overflow-hidden rounded-3xl glass-panel p-6 sm:p-10 neon-glow">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-4">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span> Réservation en ligne & Retrait local
+                    </span>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+                        Les meilleures <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Puffs & Saveurs</span> près de chez vous.
+                    </h1>
+                    <p class="text-zinc-400 text-sm sm:text-base mb-6 leading-relaxed">
+                        Commandez vos modèles préférés en temps réel et choisissez votre point de remise en main propre parmi nos villes, villages et adresses disponibles.
+                    </p>
+                    <div class="flex flex-wrap gap-3 text-xs text-zinc-400">
+                        <span class="bg-zinc-900/90 px-3 py-1.5 rounded-lg border border-zinc-800"><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Stocks synchronisés</span>
+                        <span class="bg-zinc-900/90 px-3 py-1.5 rounded-lg border border-zinc-800"><i class="fa-solid fa-location-dot text-violet-400 mr-1.5"></i>Lieux de retrait flexibles</span>
+                        <span class="bg-zinc-900/90 px-3 py-1.5 rounded-lg border border-zinc-800"><i class="fa-solid fa-lock text-cyan-400 mr-1.5"></i>Comptes vérifiés</span>
+                    </div>
+                </div>
+                <div class="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 opacity-20 pointer-events-none">
+                    <i class="fa-solid fa-wind text-[180px] text-violet-500"></i>
+                </div>
+            </div>
+
+            <!-- Liste des lieux de retrait disponibles -->
+            <div class="glass-panel rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 text-sm">
+                    <div class="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <div>
+                        <span class="font-semibold text-zinc-200">Lieux de retrait actifs :</span>
+                        <span id="shop-locations-preview" class="text-zinc-400 ml-1">Chargement...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grille des Produits -->
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-fire text-orange-500"></i> Catalogue Disponible
+                    </h2>
+                    <span id="products-total-label" class="text-sm text-zinc-400">0 produit</span>
+                </div>
+
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Injecté par JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION ADMINISTRATEUR (eneko640@outlook.fr) -->
+        <section id="section-admin" class="hidden space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-2">
+                        <i class="fa-solid fa-crown"></i> Panneau Administrateur (Sauvegarde Automatique Active)
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Gestion de la Boutique</h1>
+                    <p class="text-sm text-zinc-400">Connecté en tant que <span class="text-zinc-200 font-medium">eneko640@outlook.fr</span></p>
+                </div>
+                <button onclick="showSection('shop')" class="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-sm font-medium text-white transition self-start">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>Retour à la boutique
+                </button>
+            </div>
+
+            <!-- Onglets Admin -->
+            <div class="flex flex-wrap gap-2 border-b border-zinc-800 pb-4">
+                <button onclick="switchAdminTab('products')" id="tab-btn-products" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-violet-600 text-white transition">
+                    <i class="fa-solid fa-box-open mr-2"></i>Produits & Stocks
+                </button>
+                <button onclick="switchAdminTab('locations')" id="tab-btn-locations" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-zinc-800/70 text-zinc-300 hover:bg-zinc-800 transition">
+                    <i class="fa-solid fa-location-dot mr-2"></i>Lieux de retrait
+                </button>
+                <button onclick="switchAdminTab('verifications')" id="tab-btn-verifications" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-zinc-800/70 text-zinc-300 hover:bg-zinc-800 transition flex items-center gap-2">
+                    <i class="fa-solid fa-envelope-open-text"></i>Demandes de codes
+                    <span id="tab-verif-badge" class="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
+                </button>
+                <button onclick="switchAdminTab('users')" id="tab-btn-users" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-zinc-800/70 text-zinc-300 hover:bg-zinc-800 transition">
+                    <i class="fa-solid fa-users mr-2"></i>Comptes enregistrés
+                </button>
+                <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="admin-tab-btn px-4 py-2 rounded-xl text-sm font-semibold bg-zinc-800/70 text-zinc-300 hover:bg-zinc-800 transition">
+                    <i class="fa-solid fa-receipt mr-2"></i>Commandes clients
+                </button>
+            </div>
+
+            <!-- ONGLET 1 : PRODUITS & STOCKS -->
+            <div id="admin-tab-products" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Formulaire d'ajout d'offre -->
+                <div class="glass-panel rounded-2xl p-6 h-fit">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-violet-400"></i> Ajouter une offre
+                    </h3>
+                    <form id="add-product-form" onsubmit="handleAddProduct(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">Nom de la Puff *</label>
+                            <input type="text" id="prod-name" required placeholder="Ex: Tornado 9000 - Fraise Pastèque" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">Saveur / Description</label>
+                            <input type="text" id="prod-desc" placeholder="Ex: 9000 bouffées, goût frais et sucré" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-400 mb-1">Prix (€) *</label>
+                                <input type="number" id="prod-price" step="0.50" min="0" required placeholder="15.00" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-400 mb-1">Stock initial *</label>
+                                <input type="number" id="prod-stock" min="0" required placeholder="10" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">Image du produit (Fichier compressé auto) *</label>
+                            <input type="file" id="prod-image-file" accept="image/*" onchange="previewAdminImage(event)" class="w-full text-xs text-zinc-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-violet-600 file:text-white hover:file:bg-violet-500 cursor-pointer bg-zinc-900 rounded-xl border border-zinc-700 p-1">
+                            <p class="text-[11px] text-zinc-500 mt-1">Ou collez un lien d'image ci-dessous :</p>
+                            <input type="url" id="prod-image-url" placeholder="https://..." class="mt-1 w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-xs focus:outline-none focus:border-violet-500">
+                            <img id="admin-img-preview" class="hidden mt-3 w-full h-32 object-cover rounded-xl border border-zinc-700" alt="Aperçu">
+                        </div>
+                        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg transition">
+                            Publier et sauvegarder l'offre
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Liste de gestion des stocks -->
+                <div class="lg:col-span-2 glass-panel rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-4">Inventaire & Stocks actuels</h3>
+                    <div id="admin-products-list" class="space-y-3">
+                        <!-- Injecté par JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET 2 : LIEUX DE RETRAIT -->
+            <div id="admin-tab-locations" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass-panel rounded-2xl p-6 h-fit">
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-map-pin text-cyan-400"></i> Ajouter un lieu de retrait
+                    </h3>
+                    <p class="text-xs text-zinc-400 mb-4">Ajoutez une ville, un village ou une adresse précise où les clients pourront récupérer leur commande.</p>
+                    <form onsubmit="handleAddLocation(event)" class="flex gap-2">
+                        <input type="text" id="new-location-input" required placeholder="Ex: Louhossoa (Place du fronton) ou Bayonne" class="flex-grow px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-cyan-500">
+                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition shrink-0">
+                            Ajouter
+                        </button>
+                    </form>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-4">Lieux enregistrés et sauvegardés</h3>
+                    <div id="admin-locations-list" class="space-y-2.5">
+                        <!-- Injecté par JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONGLET 3 : DEMANDES DE CODES DE VÉRIFICATION -->
+            <div id="admin-tab-verifications" class="hidden glass-panel rounded-2xl p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-shield-cat text-amber-400"></i> Demandes de vérification en attente
+                        </h3>
+                        <p class="text-xs text-zinc-400 mt-1">Lorsqu'un visiteur crée un compte, sa demande est sauvegardée ici et un email vers <span class="text-zinc-200">eneko640@outlook.fr</span> est préparé.</p>
+                    </div>
+                </div>
+                <div id="admin-verifications-list" class="space-y-3">
+                    <!-- Injecté par JS -->
+                </div>
+            </div>
+
+            <!-- ONGLET 4 : COMPTES UTILISATEURS ENREGISTRÉS -->
+            <div id="admin-tab-users" class="hidden glass-panel rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-white mb-4">Tous les comptes sauvegardés sur le site</h3>
+                <div id="admin-users-list" class="space-y-3">
+                    <!-- Injecté par JS -->
+                </div>
+            </div>
+
+            <!-- ONGLET 5 : COMMANDES CLIENTS -->
+            <div id="admin-tab-orders" class="hidden glass-panel rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-white mb-4">Historique des achats (Stocks déduits par 1 par unité)</h3>
+                <div id="admin-orders-list" class="space-y-3">
+                    <!-- Injecté par JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODALE AUTHENTIFICATION (Connexion / Inscription / Vérification Code) -->
+    <div id="auth-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-panel border border-zinc-700 rounded-3xl max-w-md w-full p-6 sm:p-8 relative shadow-2xl">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-zinc-400 hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <!-- VUE 1 : CONNEXION -->
+            <div id="auth-view-login">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-violet-600/20 text-violet-400 flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-right-to-bracket text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Connexion</h2>
+                    <p class="text-xs text-zinc-400 mt-1">Accédez à votre espace client ou administrateur</p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1">Adresse Email</label>
+                        <input type="email" id="login-email" required placeholder="exemple@email.com" class="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1">Mot de passe</label>
+                        <input type="password" id="login-password" required placeholder="••••••••••••" class="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-violet-500">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm transition shadow-lg shadow-violet-600/25">
+                        Se connecter
+                    </button>
+                </form>
+
+                <div class="mt-6 pt-5 border-t border-zinc-800 text-center space-y-2">
+                    <p class="text-xs text-zinc-400">Pas encore de compte ?</p>
+                    <button onclick="switchAuthView('register')" class="text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition">
+                        Créer un compte sécurisé &rarr;
+                    </button>
+                    <div class="pt-2">
+                        <button onclick="switchAuthView('verify')" class="text-xs text-zinc-500 hover:text-zinc-300 underline">
+                            J'ai déjà reçu mon code de vérification
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VUE 2 : INSCRIPTION STRICTE -->
+            <div id="auth-view-register" class="hidden">
+                <div class="text-center mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-600/20 text-cyan-400 flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-user-shield text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Créer un compte</h2>
+                    <p class="text-xs text-zinc-400 mt-1">Validation par code envoyée à l'administrateur</p>
+                </div>
+
+                <form onsubmit="handleRegister(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1">Votre Email *</label>
+                        <input type="email" id="reg-email" oninput="validatePasswordLive()" required placeholder="client@exemple.fr" class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1">Mot de passe haute sécurité *</label>
+                        <div class="relative">
+                            <input type="password" id="reg-password" oninput="validatePasswordLive()" required placeholder="16 à 32 caractères..." class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-cyan-500 pr-10">
+                            <button type="button" onclick="toggleRegPasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xs">
+                                <i id="reg-eye-icon" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Règles en temps réel -->
+                        <div class="mt-3 p-3 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-1.5 text-xs">
+                            <div id="rule-length" class="flex items-center gap-2 text-zinc-500">
+                                <i class="fa-solid fa-circle-xmark w-3.5"></i> Entre 16 et 32 caractères (<span id="pw-char-count">0</span>/32)
+                            </div>
+                            <div id="rule-upper" class="flex items-center gap-2 text-zinc-500">
+                                <i class="fa-solid fa-circle-xmark w-3.5"></i> Au moins 1 lettre majuscule (A-Z)
+                            </div>
+                            <div id="rule-special" class="flex items-center gap-2 text-zinc-500">
+                                <i class="fa-solid fa-circle-xmark w-3.5"></i> Au moins 1 caractère spécial (!@#$%...)
+                            </div>
+                            <div id="rule-no-info" class="flex items-center gap-2 text-zinc-500">
+                                <i class="fa-solid fa-circle-xmark w-3.5"></i> Aucune info personnelle (email, nom...)
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-violet-600 hover:from-cyan-500 hover:to-violet-500 text-white font-semibold text-sm transition shadow-lg">
+                        Créer et demander mon code
+                    </button>
+                </form>
+
+                <div class="mt-5 pt-4 border-t border-zinc-800 text-center">
+                    <button onclick="switchAuthView('login')" class="text-xs font-medium text-zinc-400 hover:text-white">
+                        &larr; Retour à la connexion
+                    </button>
+                </div>
+            </div>
+
+            <!-- VUE 3 : SAISIE DU CODE DE VÉRIFICATION -->
+            <div id="auth-view-verify" class="hidden">
+                <div class="text-center mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-key text-xl"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-white">Vérification requise</h2>
+                    <p class="text-xs text-zinc-400 mt-1 leading-relaxed">
+                        Un message a été préparé pour <span class="text-white font-semibold">eneko640@outlook.fr</span> afin d'obtenir votre code de vérification.
+                    </p>
+                </div>
+
+                <!-- Bouton d'envoi direct via client mail -->
+                <div class="mb-4 p-3 rounded-xl bg-violet-500/10 border border-violet-500/30 text-center">
+                    <p class="text-xs text-zinc-300 mb-2">Cliquez ci-dessous pour envoyer l'email si besoin :</p>
+                    <a id="mailto-trigger-link" href="#" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold transition">
+                        <i class="fa-solid fa-paper-plane"></i> Envoyer l'email à eneko640@outlook.fr
+                    </a>
+                </div>
+
+                <form onsubmit="handleVerifyCode(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1">Email du compte</label>
+                        <input type="email" id="verify-email" required placeholder="votre@email.fr" class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-400 mb-1">Code de vérification à 6 chiffres</label>
+                        <input type="text" id="verify-code-input" maxlength="6" required placeholder="123456" class="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-center text-lg font-mono tracking-widest focus:outline-none focus:border-amber-500">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition">
+                        Valider et activer mon compte
+                    </button>
+                </form>
+
+                <div class="mt-5 pt-4 border-t border-zinc-800 text-center">
+                    <button onclick="switchAuthView('login')" class="text-xs font-medium text-zinc-400 hover:text-white">
+                        &larr; Retour à la connexion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE PANIER & COMMANDE -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex justify-end">
+        <div class="glass-panel border-l border-zinc-800 w-full max-w-md h-full flex flex-col justify-between p-6 overflow-y-auto">
+            <div>
+                <div class="flex items-center justify-between border-b border-zinc-800 pb-4 mb-4">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping text-violet-400"></i> Votre Panier
+                    </h2>
+                    <button onclick="toggleCartModal()" class="text-zinc-400 hover:text-white p-2">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Articles du panier -->
+                <div id="cart-items-container" class="space-y-3 max-h-[45vh] overflow-y-auto pr-1">
+                    <!-- Injecté par JS -->
+                </div>
+            </div>
+
+            <!-- Validation & Lieu de retrait -->
+            <div class="border-t border-zinc-800 pt-4 mt-4 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-300 mb-1.5">
+                        <i class="fa-solid fa-location-dot text-cyan-400 mr-1"></i> Choisir un lieu de retrait *
+                    </label>
+                    <select id="checkout-location-select" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 text-white text-sm focus:outline-none focus:border-cyan-500">
+                        <!-- Injecté par JS -->
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-between text-base font-bold text-white">
+                    <span>Total à régler sur place :</span>
+                    <span id="cart-total-price" class="text-xl text-cyan-400">0.00 €</span>
+                </div>
+
+                <button onclick="handleCheckout()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-500 hover:to-cyan-500 text-white font-bold text-sm shadow-lg shadow-violet-600/20 transition">
+                    Confirmer la réservation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pied de page -->
+    <footer class="border-t border-zinc-900 py-6 mt-12 text-center text-xs text-zinc-500">
+        <p>PuffZone 64 &copy; 2026 — Vente réservée aux personnes majeures (+18 ans). Données synchronisées et sauvegardées.</p>
+    </footer>
+
+    <!-- LOGIQUE PERSISTANTE FIREBASE FIRESTORE + FALLBACK MIROIR -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // ==========================================
+        // 1. CONSTANTES & CONFIGURATION
+        // ==========================================
+        const ADMIN_EMAIL = "eneko640@outlook.fr";
+        const ADMIN_PASS = "Eneko@64K";
+
+        const defaultProducts = [
+            {
+                id: 'p1',
+                name: 'RandM Tornado 9000 - Fraise Pastèque',
+                desc: '9000 bouffées • Rechargeable USB-C • Effet frais',
+                price: 15.00,
+                stock: 8,
+                image: 'https://images.unsplash.com/photo-1560913210-91b74d80e0a8?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'p2',
+                name: 'JNR Falcon 16K - Myrtille Framboise',
+                desc: '16000 bouffées • Double Mesh Coil • Saveur intense',
+                price: 18.00,
+                stock: 5,
+                image: 'https://images.unsplash.com/photo-1534120247760-c44c3e4a62f1?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'p3',
+                name: 'Wpuff 2.0 - Mangue Glacée',
+                desc: '2000 bouffées • Format compact • Sans nicotine',
+                price: 10.00,
+                stock: 12,
+                image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?auto=format&fit=crop&w=600&q=80'
+            }
+        ];
+
+        const defaultLocations = [
+            { id: 'loc1', label: "Louhossoa - Place du Fronton" },
+            { id: 'loc2', label: "Cambo-les-Bains - Centre-ville" },
+            { id: 'loc3', label: "Bayonne - Gare SNCF" },
+            { id: 'loc4', label: "Espelette - Parking principal" }
+        ];
+
+        // État global de l'application
+        let state = {
+            users: [],
+            products: [],
+            locations: [],
+            orders: [],
+            cart: [],
+            currentUser: null,
+            uploadedBase64Image: null
+        };
+
+        // Variables Firebase
+        let db = null;
+        let auth = null;
+        let isCloudReady = false;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'puffzone-64-store';
+
+        // ==========================================
+        // 2. INDICATEUR DE SAUVEGARDE & MIROIR LOCAL
+        // ==========================================
+        function setSyncIndicator(status) {
+            const badge = document.getElementById('sync-status-badge');
+            const text = document.getElementById('sync-status-text');
+            if (!badge || !text) return;
+
+            badge.classList.remove('hidden');
+            if (status === 'saving') {
+                badge.className = "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 transition-all";
+                badge.innerHTML = `<i class="fa-solid fa-rotate fa-spin"></i><span>Synchronisation...</span>`;
+            } else {
+                badge.className = "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all";
+                badge.innerHTML = `<i class="fa-solid fa-cloud-check"></i><span>Sauvegardé ✓</span>`;
+            }
+        }
+
+        function saveMirrorToLocal() {
+            try {
+                localStorage.setItem('pz_v2_users', JSON.stringify(state.users));
+                localStorage.setItem('pz_v2_products', JSON.stringify(state.products));
+                localStorage.setItem('pz_v2_locations', JSON.stringify(state.locations));
+                localStorage.setItem('pz_v2_orders', JSON.stringify(state.orders));
+                if (state.currentUser) {
+                    sessionStorage.setItem('pz_v2_session', JSON.stringify(state.currentUser));
+                } else {
+                    sessionStorage.removeItem('pz_v2_session');
+                }
+            } catch (e) {
+                console.warn("Erreur sauvegarde miroir :", e);
+            }
+        }
+
+        function loadMirrorFromLocal() {
+            const u = localStorage.getItem('pz_v2_users');
+            const p = localStorage.getItem('pz_v2_products');
+            const l = localStorage.getItem('pz_v2_locations');
+            const o = localStorage.getItem('pz_v2_orders');
+            const s = sessionStorage.getItem('pz_v2_session');
+
+            state.users = u ? JSON.parse(u) : [];
+            if (!state.users.some(x => x.email.toLowerCase() === ADMIN_EMAIL)) {
+                state.users.push({
+                    id: 'admin_eneko',
+                    email: ADMIN_EMAIL,
+                    password: ADMIN_PASS,
+                    verified: true,
+                    isAdmin: true,
+                    createdAt: 'Compte Administrateur Principal'
+                });
+            }
+            state.products = p ? JSON.parse(p) : [...defaultProducts];
+            state.locations = l ? JSON.parse(l) : [...defaultLocations];
+            state.orders = o ? JSON.parse(o) : [];
+            state.currentUser = s ? JSON.parse(s) : null;
+        }
+
+        // ==========================================
+        // 3. INITIALISATION FIRESTORE TEMPS RÉEL
+        // ==========================================
+        function sanitizeDocId(str) {
+            return str.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+        }
+
+        async function persistRecord(collectionName, docId, data) {
+            setSyncIndicator('saving');
+            saveMirrorToLocal();
+
+            if (isCloudReady && db && auth.currentUser) {
+                try {
+                    const ref = doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId);
+                    await setDoc(ref, data);
+                } catch (err) {
+                    console.error(`Erreur sauvegarde cloud (${collectionName}):`, err);
+                }
+            }
+            setTimeout(() => setSyncIndicator('saved'), 400);
+        }
+
+        async function removeRecord(collectionName, docId) {
+            setSyncIndicator('saving');
+            saveMirrorToLocal();
+
+            if (isCloudReady && db && auth.currentUser) {
+                try {
+                    const ref = doc(db, 'artifacts', appId, 'public', 'data', collectionName, docId);
+                    await deleteDoc(ref);
+                } catch (err) {
+                    console.error(`Erreur suppression cloud (${collectionName}):`, err);
+                }
+            }
+            setTimeout(() => setSyncIndicator('saved'), 400);
+        }
+
+        async function initDatabase() {
+            loadMirrorFromLocal();
+            refreshAllUI();
+
+            try {
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    const firebaseConfig = JSON.parse(__firebase_config);
+                    const app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+
+                    isCloudReady = true;
+                    setupRealtimeListeners();
+                }
+            } catch (error) {
+                console.warn("Mode autonome local activé :", error);
+                setSyncIndicator('saved');
+            }
+        }
+
+        function setupRealtimeListeners() {
+            if (!isCloudReady || !db || !auth.currentUser) return;
+
+            // 1. Écoute en temps réel des utilisateurs (Comptes & Demandes de codes)
+            const usersCol = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+            onSnapshot(usersCol, async (snapshot) => {
+                if (snapshot.empty) {
+                    // Initialiser les utilisateurs existants (dont l'admin eneko640@outlook.fr) dans le cloud
+                    for (const u of state.users) {
+                        await persistRecord('users', sanitizeDocId(u.email), u);
+                    }
+                } else {
+                    const cloudUsers = [];
+                    snapshot.forEach(docSnap => cloudUsers.push(docSnap.data()));
+                    // Garantir que l'admin est toujours présent
+                    if (!cloudUsers.some(u => u.email.toLowerCase() === ADMIN_EMAIL)) {
+                        const adminObj = {
+                            id: 'admin_eneko',
+                            email: ADMIN_EMAIL,
+                            password: ADMIN_PASS,
+                            verified: true,
+                            isAdmin: true,
+                            createdAt: 'Compte Administrateur Principal'
+                        };
+                        cloudUsers.push(adminObj);
+                        await persistRecord('users', sanitizeDocId(ADMIN_EMAIL), adminObj);
+                    }
+                    state.users = cloudUsers;
+                    saveMirrorToLocal();
+                    refreshAllUI();
+                }
+            }, (err) => console.error("Erreur listener users:", err));
+
+            // 2. Écoute en temps réel des produits & stocks
+            const productsCol = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+            onSnapshot(productsCol, async (snapshot) => {
+                if (snapshot.empty && !localStorage.getItem('pz_v2_initialized_products')) {
+                    localStorage.setItem('pz_v2_initialized_products', 'true');
+                    for (const p of state.products) {
+                        await persistRecord('products', p.id, p);
+                    }
+                } else if (!snapshot.empty) {
+                    const cloudProds = [];
+                    snapshot.forEach(docSnap => cloudProds.push(docSnap.data()));
+                    state.products = cloudProds;
+                    saveMirrorToLocal();
+                    refreshAllUI();
+                }
+            }, (err) => console.error("Erreur listener products:", err));
+
+            // 3. Écoute en temps réel des lieux de retrait
+            const locationsCol = collection(db, 'artifacts', appId, 'public', 'data', 'pickup_locations');
+            onSnapshot(locationsCol, async (snapshot) => {
+                if (snapshot.empty && !localStorage.getItem('pz_v2_initialized_locations')) {
+                    localStorage.setItem('pz_v2_initialized_locations', 'true');
+                    for (const loc of state.locations) {
+                        await persistRecord('pickup_locations', loc.id, loc);
+                    }
+                } else if (!snapshot.empty) {
+                    const cloudLocs = [];
+                    snapshot.forEach(docSnap => cloudLocs.push(docSnap.data()));
+                    state.locations = cloudLocs;
+                    saveMirrorToLocal();
+                    refreshAllUI();
+                }
+            }, (err) => console.error("Erreur listener locations:", err));
+
+            // 4. Écoute en temps réel des commandes
+            const ordersCol = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
+            onSnapshot(ordersCol, (snapshot) => {
+                const cloudOrders = [];
+                snapshot.forEach(docSnap => cloudOrders.push(docSnap.data()));
+                // Trier en mémoire du plus récent au plus ancien
+                cloudOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                if (cloudOrders.length > 0) {
+                    state.orders = cloudOrders;
+                    saveMirrorToLocal();
+                    refreshAllUI();
+                }
+            }, (err) => console.error("Erreur listener orders:", err));
+        }
+
+        function refreshAllUI() {
+            updateHeaderUI();
+            renderShop();
+            updateCartUI();
+            if (!document.getElementById('section-admin').classList.contains('hidden')) {
+                renderAdminDashboard();
+            }
+        }
+
+        // ==========================================
+        // 4. NOTIFICATIONS (TOASTS)
+        // ==========================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const colors = {
+                success: 'bg-emerald-950/95 border-emerald-500/50 text-emerald-200',
+                error: 'bg-red-950/95 border-red-500/50 text-red-200',
+                warning: 'bg-amber-950/95 border-amber-500/50 text-amber-200',
+                info: 'bg-zinc-900/95 border-violet-500/50 text-zinc-100'
+            };
+            const icons = {
+                success: 'fa-circle-check text-emerald-400',
+                error: 'fa-circle-exclamation text-red-400',
+                warning: 'fa-triangle-exclamation text-amber-400',
+                info: 'fa-circle-info text-violet-400'
+            };
+
+            toast.className = `pointer-events-auto flex items-start gap-3 p-4 rounded-2xl border shadow-xl backdrop-blur-md transition-all duration-300 transform translate-x-0 ${colors[type]}`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icons[type]} mt-0.5 text-base"></i>
+                <div class="text-xs font-medium leading-relaxed">${message}</div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-4');
+                setTimeout(() => toast.remove(), 300);
+            }, 4500);
+        }
+
+        // ==========================================
+        // 5. NAVIGATION & INTERFACE UTILISATEUR
+        // ==========================================
+        window.showSection = function(sectionName) {
+            document.getElementById('section-shop').classList.add('hidden');
+            document.getElementById('section-admin').classList.add('hidden');
+
+            if (sectionName === 'admin') {
+                if (!state.currentUser || state.currentUser.email.toLowerCase() !== ADMIN_EMAIL) {
+                    showToast("Accès réservé à l'administrateur.", "error");
+                    window.showSection('shop');
+                    return;
+                }
+                document.getElementById('section-admin').classList.remove('hidden');
+                renderAdminDashboard();
+            } else {
+                document.getElementById('section-shop').classList.remove('hidden');
+                renderShop();
+            }
+        };
+
+        function updateHeaderUI() {
+            const authArea = document.getElementById('auth-nav-area');
+            const adminBtn = document.getElementById('nav-admin-btn');
+            const badgeCount = document.getElementById('admin-badge-count');
+
+            const pendingCount = state.users.filter(u => !u.verified).length;
+            if (pendingCount > 0) {
+                badgeCount.textContent = pendingCount;
+                badgeCount.classList.remove('hidden');
+            } else {
+                badgeCount.classList.add('hidden');
+            }
+
+            if (state.currentUser) {
+                const isAdmin = state.currentUser.email.toLowerCase() === ADMIN_EMAIL;
+                if (isAdmin) {
+                    adminBtn.classList.remove('hidden');
+                } else {
+                    adminBtn.classList.add('hidden');
+                }
+
+                authArea.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="hidden md:inline text-xs font-medium text-zinc-300 bg-zinc-800/80 px-3 py-1.5 rounded-xl border border-zinc-700">
+                            ${state.currentUser.email}
+                        </span>
+                        <button onclick="handleLogout()" title="Déconnexion" class="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition text-xs font-semibold">
+                            <i class="fa-solid fa-power-off"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                adminBtn.classList.add('hidden');
+                authArea.innerHTML = `
+                    <button onclick="openAuthModal('login')" class="px-4 py-2 rounded-xl text-sm font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-md shadow-violet-600/20 transition">
+                        <i class="fa-solid fa-user mr-1.5"></i>Connexion
+                    </button>
+                `;
+            }
+        }
+
+        // ==========================================
+        // 6. AUTHENTIFICATION & INSCRIPTION STRICTE
+        // ==========================================
+        window.openAuthModal = function(view = 'login') {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            window.switchAuthView(view);
+        };
+
+        window.closeAuthModal = function() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        };
+
+        window.switchAuthView = function(view) {
+            document.getElementById('auth-view-login').classList.add('hidden');
+            document.getElementById('auth-view-register').classList.add('hidden');
+            document.getElementById('auth-view-verify').classList.add('hidden');
+            document.getElementById(`auth-view-${view}`).classList.remove('hidden');
+        };
+
+        window.toggleRegPasswordVisibility = function() {
+            const input = document.getElementById('reg-password');
+            const icon = document.getElementById('reg-eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        };
+
+        function checkPasswordRules(email, password) {
+            const lengthOk = password.length >= 16 && password.length <= 32;
+            const upperOk = /[A-Z]/.test(password);
+            const specialOk = /[^A-Za-z0-9]/.test(password);
+
+            let noInfoOk = true;
+            const lowerPw = password.toLowerCase();
+
+            // Interdire toute partie de l'email (avant et après @)
+            if (email && email.includes('@')) {
+                const [localPart, domainPart] = email.toLowerCase().split('@');
+                const tokens = localPart.split(/[._\-0-9]+/).filter(t => t.length >= 3);
+                if (localPart.length >= 3 && lowerPw.includes(localPart)) noInfoOk = false;
+                for (let token of tokens) {
+                    if (lowerPw.includes(token)) noInfoOk = false;
+                }
+                if (domainPart) {
+                    const domainName = domainPart.split('.')[0];
+                    if (domainName && domainName.length >= 4 && lowerPw.includes(domainName)) {
+                        noInfoOk = false;
+                    }
+                }
+            }
+
+            return { lengthOk, upperOk, specialOk, noInfoOk, allValid: lengthOk && upperOk && specialOk && noInfoOk };
+        }
+
+        window.validatePasswordLive = function() {
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            document.getElementById('pw-char-count').textContent = password.length;
+
+            const rules = checkPasswordRules(email, password);
+
+            updateRuleUI('rule-length', rules.lengthOk);
+            updateRuleUI('rule-upper', rules.upperOk);
+            updateRuleUI('rule-special', rules.specialOk);
+            updateRuleUI('rule-no-info', rules.noInfoOk);
+        };
+
+        function updateRuleUI(elementId, isValid) {
+            const el = document.getElementById(elementId);
+            const icon = el.querySelector('i');
+            if (isValid) {
+                el.classList.remove('text-zinc-500', 'text-red-400');
+                el.classList.add('text-emerald-400');
+                icon.classList.replace('fa-circle-xmark', 'fa-circle-check');
+            } else {
+                el.classList.remove('text-emerald-400');
+                el.classList.add('text-zinc-500');
+                icon.classList.replace('fa-circle-check', 'fa-circle-xmark');
+            }
+        }
+
+        // Soumission de l'inscription + Sauvegarde immédiate
+        window.handleRegister = async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const password = document.getElementById('reg-password').value;
+
+            if (email === ADMIN_EMAIL) {
+                showToast("Cet email est réservé à l'administrateur.", "error");
+                return;
+            }
+
+            const existingUser = state.users.find(u => u.email === email);
+            if (existingUser && existingUser.verified) {
+                showToast("Un compte vérifié existe déjà avec cet email.", "error");
+                return;
+            }
+
+            const validation = checkPasswordRules(email, password);
+            if (!validation.allValid) {
+                showToast("Votre mot de passe ne respecte pas toutes les règles de sécurité.", "error");
+                return;
+            }
+
+            const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            const userRecord = {
+                id: sanitizeDocId(email),
+                email: email,
+                password: password,
+                verified: false,
+                verificationCode: verificationCode,
+                createdAt: new Date().toLocaleString('fr-FR')
+            };
+
+            if (existingUser) {
+                Object.assign(existingUser, userRecord);
+            } else {
+                state.users.push(userRecord);
+            }
+
+            await persistRecord('users', userRecord.id, userRecord);
+            refreshAllUI();
+
+            // Préparation et déclenchement de l'email vers eneko640@outlook.fr
+            const subject = encodeURIComponent("Demande de code de vérification");
+            const body = encodeURIComponent(`${email} a besoin d’un ccode de vérification\n\nCode de validation : ${verificationCode}`);
+            const mailtoUrl = `mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`;
+
+            document.getElementById('mailto-trigger-link').href = mailtoUrl;
+            document.getElementById('verify-email').value = email;
+
+            window.location.href = mailtoUrl;
+
+            showToast(`Compte enregistré ! Demande envoyée à ${ADMIN_EMAIL}.`, "warning");
+            window.switchAuthView('verify');
+        };
+
+        // Validation du code à 6 chiffres + Sauvegarde permanente du compte activé
+        window.handleVerifyCode = async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('verify-email').value.trim().toLowerCase();
+            const code = document.getElementById('verify-code-input').value.trim();
+
+            const user = state.users.find(u => u.email === email);
+            if (!user) {
+                showToast("Aucune demande trouvée pour cet email.", "error");
+                return;
+            }
+            if (user.verified) {
+                showToast("Ce compte est déjà vérifié. Vous pouvez vous connecter.", "info");
+                window.switchAuthView('login');
+                return;
+            }
+            if (user.verificationCode === code) {
+                user.verified = true;
+                user.verifiedAt = new Date().toLocaleString('fr-FR');
+                delete user.verificationCode;
+
+                await persistRecord('users', sanitizeDocId(user.email), user);
+                refreshAllUI();
+
+                showToast("Compte vérifié et sauvegardé ! Vous pouvez maintenant vous connecter.", "success");
+                document.getElementById('login-email').value = email;
+                window.switchAuthView('login');
+            } else {
+                showToast("Code de vérification incorrect.", "error");
+            }
+        };
+
+        // Connexion (Admin ou Client vérifié)
+        window.handleLogin = function(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            const user = state.users.find(u => u.email === email);
+
+            if (!user || user.password !== password) {
+                showToast("Email ou mot de passe incorrect.", "error");
+                return;
+            }
+
+            if (!user.verified) {
+                showToast("Votre compte n'est pas encore vérifié. Saisissez votre code.", "warning");
+                document.getElementById('verify-email').value = email;
+                window.switchAuthView('verify');
+                return;
+            }
+
+            state.currentUser = { email: user.email, isAdmin: user.email === ADMIN_EMAIL };
+            saveMirrorToLocal();
+            refreshAllUI();
+            window.closeAuthModal();
+
+            if (state.currentUser.isAdmin) {
+                showToast("Bienvenue Administrateur Eneko !", "success");
+                window.showSection('admin');
+            } else {
+                showToast(`Ravi de vous revoir, ${user.email} !`, "success");
+            }
+        };
+
+        window.handleLogout = function() {
+            state.currentUser = null;
+            saveMirrorToLocal();
+            refreshAllUI();
+            window.showSection('shop');
+            showToast("Vous avez été déconnecté.", "info");
+        };
+
+        // ==========================================
+        // 7. BOUTIQUE & PANIER CLIENT
+        // ==========================================
+        function renderShop() {
+            const grid = document.getElementById('products-grid');
+            const totalLabel = document.getElementById('products-total-label');
+            const locPreview = document.getElementById('shop-locations-preview');
+
+            totalLabel.textContent = `${state.products.length} modèle(s)`;
+            locPreview.textContent = state.locations.length > 0 
+                ? state.locations.map(l => l.label).join(' • ') 
+                : "Aucun lieu configuré pour le moment.";
+
+            if (state.products.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-500">Aucune Puff disponible actuellement.</div>`;
+                return;
+            }
+
+            grid.innerHTML = state.products.map(prod => {
+                const isOutOfStock = prod.stock <= 0;
+                return `
+                    <div class="glass-panel rounded-2xl overflow-hidden flex flex-col justify-between border border-zinc-800/80 hover:border-violet-500/40 transition group">
+                        <div>
+                            <div class="relative h-48 bg-zinc-900 overflow-hidden">
+                                <img src="${prod.image}" alt="${prod.name}" onerror="this.src='https://placehold.co/600x400/18181b/a78bfa?text=PuffZone'" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ${isOutOfStock ? 'opacity-40 grayscale' : ''}">
+                                <div class="absolute top-3 right-3">
+                                    ${isOutOfStock 
+                                        ? `<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-600/90 text-white shadow">Rupture de stock</span>`
+                                        : `<span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-zinc-950/80 text-emerald-400 border border-emerald-500/30 backdrop-blur-md">En stock : ${prod.stock}</span>`
+                                    }
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-base text-white mb-1 line-clamp-1">${prod.name}</h3>
+                                <p class="text-xs text-zinc-400 line-clamp-2 mb-4">${prod.desc || 'Saveur authentique • Prête à vaper'}</p>
+                            </div>
+                        </div>
+                        <div class="px-5 pb-5 pt-2 flex items-center justify-between border-t border-zinc-800/60">
+                            <span class="text-xl font-extrabold text-white">${Number(prod.price).toFixed(2)} €</span>
+                            <button onclick="addToCart('${prod.id}')" ${isOutOfStock ? 'disabled' : ''} class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${isOutOfStock ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' : 'bg-violet-600 hover:bg-violet-500 text-white shadow-md shadow-violet-600/20'}">
+                                <i class="fa-solid fa-cart-plus"></i> ${isOutOfStock ? 'Épuisé' : 'Ajouter'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.addToCart = function(productId) {
+            const product = state.products.find(p => p.id === productId);
+            if (!product || product.stock <= 0) return;
+
+            const existingItem = state.cart.find(item => item.productId === productId);
+            if (existingItem) {
+                if (existingItem.qty + 1 > product.stock) {
+                    showToast(`Stock maximum atteint (${product.stock} disponible(s)).`, "warning");
+                    return;
+                }
+                existingItem.qty += 1;
+            } else {
+                state.cart.push({ productId: product.id, qty: 1 });
+            }
+
+            updateCartUI();
+            showToast(`"${product.name}" ajouté au panier !`, "success");
+        };
+
+        window.updateCartQty = function(productId, delta) {
+            const item = state.cart.find(i => i.productId === productId);
+            const product = state.products.find(p => p.id === productId);
+            if (!item || !product) return;
+
+            const newQty = item.qty + delta;
+            if (newQty <= 0) {
+                state.cart = state.cart.filter(i => i.productId !== productId);
+            } else if (newQty <= product.stock) {
+                item.qty = newQty;
+            } else {
+                showToast(`Stock disponible limité à ${product.stock}.`, "warning");
+            }
+            updateCartUI();
+        };
+
+        function updateCartUI() {
+            const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cart-count').textContent = totalItems;
+
+            const container = document.getElementById('cart-items-container');
+            const totalPriceEl = document.getElementById('cart-total-price');
+            const locSelect = document.getElementById('checkout-location-select');
+
+            locSelect.innerHTML = state.locations.length > 0
+                ? state.locations.map(loc => `<option value="${loc.label}">${loc.label}</option>`).join('')
+                : `<option value="">Aucun lieu de retrait disponible</option>`;
+
+            if (state.cart.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-zinc-500 text-sm">Votre panier est vide.</div>`;
+                totalPriceEl.textContent = "0.00 €";
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = state.cart.map(item => {
+                const prod = state.products.find(p => p.id === item.productId);
+                if (!prod) return '';
+                const subtotal = prod.price * item.qty;
+                total += subtotal;
+
+                return `
+                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-zinc-900/90 border border-zinc-800">
+                        <img src="${prod.image}" class="w-12 h-12 rounded-lg object-cover shrink-0" alt="">
+                        <div class="flex-grow min-w-0">
+                            <h4 class="text-xs font-bold text-white truncate">${prod.name}</h4>
+                            <p class="text-xs text-cyan-400 font-semibold">${Number(prod.price).toFixed(2)} €</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-zinc-950 px-2 py-1 rounded-lg border border-zinc-800">
+                            <button onclick="updateCartQty('${prod.id}', -1)" class="text-zinc-400 hover:text-white px-1">-</button>
+                            <span class="text-xs font-bold text-white w-4 text-center">${item.qty}</span>
+                            <button onclick="updateCartQty('${prod.id}', 1)" class="text-zinc-400 hover:text-white px-1">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            totalPriceEl.textContent = `${total.toFixed(2)} €`;
+        }
+
+        window.toggleCartModal = function() {
+            const modal = document.getElementById('cart-modal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                updateCartUI();
+            }
+        };
+
+        // Validation de l'achat, déduction du stock et sauvegarde immédiate
+        window.handleCheckout = async function() {
+            if (!state.currentUser) {
+                window.toggleCartModal();
+                showToast("Veuillez vous connecter ou créer un compte pour commander.", "warning");
+                window.openAuthModal('login');
+                return;
+            }
+
+            if (state.cart.length === 0) {
+                showToast("Votre panier est vide.", "error");
+                return;
+            }
+
+            const selectedLocation = document.getElementById('checkout-location-select').value;
+            if (!selectedLocation) {
+                showToast("Veuillez sélectionner un lieu de retrait.", "error");
+                return;
+            }
+
+            let orderItems = [];
+            let orderTotal = 0;
+
+            for (let item of state.cart) {
+                const prod = state.products.find(p => p.id === item.productId);
+                if (!prod || prod.stock < item.qty) {
+                    showToast(`Stock insuffisant pour ${prod ? prod.name : 'un produit'}.`, "error");
+                    return;
+                }
+                // Retirer du stock (par 1 pour chaque unité achetée)
+                prod.stock -= item.qty;
+                await persistRecord('products', prod.id, prod);
+
+                orderItems.push({ name: prod.name, qty: item.qty, price: prod.price });
+                orderTotal += prod.price * item.qty;
+            }
+
+            const newOrder = {
+                id: 'CMD-' + Math.floor(1000 + Math.random() * 9000),
+                customer: state.currentUser.email,
+                location: selectedLocation,
+                items: orderItems,
+                total: orderTotal,
+                date: new Date().toLocaleString('fr-FR'),
+                timestamp: Date.now()
+            };
+
+            state.orders.unshift(newOrder);
+            await persistRecord('orders', newOrder.id, newOrder);
+
+            state.cart = [];
+            refreshAllUI();
+            window.toggleCartModal();
+
+            showToast(`Commande confirmée et sauvegardée ! Retrait à : ${selectedLocation}.`, "success");
+        };
+
+        // ==========================================
+        // 8. PANNEAU ADMINISTRATEUR (ENEKO)
+        // ==========================================
+        window.switchAdminTab = function(tabName) {
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-violet-600', 'text-white');
+                btn.classList.add('bg-zinc-800/70', 'text-zinc-300');
+            });
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            activeBtn.classList.remove('bg-zinc-800/70', 'text-zinc-300');
+            activeBtn.classList.add('bg-violet-600', 'text-white');
+
+            ['products', 'locations', 'verifications', 'users', 'orders'].forEach(t => {
+                document.getElementById(`admin-tab-${t}`).classList.add('hidden');
+            });
+            document.getElementById(`admin-tab-${tabName}`).classList.remove('hidden');
+            renderAdminDashboard();
+        };
+
+        // Compression d'image locale pour une sauvegarde fluide et rapide
+        window.previewAdminImage = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgObj = new Image();
+                imgObj.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxW = 500;
+                    const scale = Math.min(1, maxW / imgObj.width);
+                    canvas.width = imgObj.width * scale;
+                    canvas.height = imgObj.height * scale;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(imgObj, 0, 0, canvas.width, canvas.height);
+
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+                    state.uploadedBase64Image = compressedDataUrl;
+                    const previewEl = document.getElementById('admin-img-preview');
+                    previewEl.src = compressedDataUrl;
+                    previewEl.classList.remove('hidden');
+                };
+                imgObj.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.handleAddProduct = async function(event) {
+            event.preventDefault();
+            const name = document.getElementById('prod-name').value.trim();
+            const desc = document.getElementById('prod-desc').value.trim();
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const stock = parseInt(document.getElementById('prod-stock').value, 10);
+            const urlInput = document.getElementById('prod-image-url').value.trim();
+
+            const finalImage = state.uploadedBase64Image || urlInput || 'https://placehold.co/600x400/18181b/a78bfa?text=PuffZone';
+
+            const newProd = {
+                id: 'prod-' + Date.now(),
+                name,
+                desc,
+                price,
+                stock,
+                image: finalImage
+            };
+
+            state.products.unshift(newProd);
+            await persistRecord('products', newProd.id, newProd);
+
+            event.target.reset();
+            state.uploadedBase64Image = null;
+            document.getElementById('admin-img-preview').classList.add('hidden');
+            refreshAllUI();
+            showToast(`Offre "${name}" ajoutée et sauvegardée sur le site !`, "success");
+        };
+
+        window.adjustAdminStock = async function(productId, delta) {
+            const prod = state.products.find(p => p.id === productId);
+            if (!prod) return;
+            prod.stock = Math.max(0, prod.stock + delta);
+            await persistRecord('products', prod.id, prod);
+            refreshAllUI();
+        };
+
+        window.deleteAdminProduct = async function(productId) {
+            state.products = state.products.filter(p => p.id !== productId);
+            await removeRecord('products', productId);
+            refreshAllUI();
+            showToast("Produit supprimé et mis à jour.", "info");
+        };
+
+        window.handleAddLocation = async function(event) {
+            event.preventDefault();
+            const input = document.getElementById('new-location-input');
+            const val = input.value.trim();
+            if (!val) return;
+
+            if (state.locations.some(l => l.label.toLowerCase() === val.toLowerCase())) {
+                showToast("Ce lieu existe déjà.", "warning");
+                return;
+            }
+
+            const newLoc = {
+                id: 'loc-' + Date.now(),
+                label: val
+            };
+
+            state.locations.push(newLoc);
+            await persistRecord('pickup_locations', newLoc.id, newLoc);
+
+            input.value = '';
+            refreshAllUI();
+            showToast(`Lieu "${val}" ajouté et sauvegardé !`, "success");
+        };
+
+        window.deleteLocation = async function(locId) {
+            const target = state.locations.find(l => l.id === locId);
+            state.locations = state.locations.filter(l => l.id !== locId);
+            await removeRecord('pickup_locations', locId);
+            refreshAllUI();
+            showToast(`Lieu "${target ? target.label : ''}" retiré.`, "info");
+        };
+
+        window.adminForceVerifyUser = async function(email) {
+            const user = state.users.find(u => u.email === email);
+            if (!user) return;
+            user.verified = true;
+            user.verifiedAt = new Date().toLocaleString('fr-FR');
+            delete user.verificationCode;
+            await persistRecord('users', sanitizeDocId(user.email), user);
+            refreshAllUI();
+            showToast(`Le compte ${email} a été activé et sauvegardé !`, "success");
+        };
+
+        function renderAdminDashboard() {
+            // 1. Liste Produits
+            const prodList = document.getElementById('admin-products-list');
+            prodList.innerHTML = state.products.map(p => `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
+                    <div class="flex items-center gap-3">
+                        <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover shrink-0" alt="">
+                        <div>
+                            <h4 class="text-sm font-bold text-white">${p.name}</h4>
+                            <p class="text-xs text-zinc-400">${Number(p.price).toFixed(2)} € • Stock : <strong class="${p.stock === 0 ? 'text-red-400' : 'text-emerald-400'}">${p.stock}</strong></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-end sm:self-center">
+                        <button onclick="adjustAdminStock('${p.id}', -1)" title="Retirer 1 du stock" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold">-1</button>
+                        <button onclick="adjustAdminStock('${p.id}', 1)" title="Ajouter 1 au stock" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold">+1</button>
+                        <button onclick="deleteAdminProduct('${p.id}')" title="Supprimer l'offre" class="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // 2. Liste Lieux de retrait
+            const locList = document.getElementById('admin-locations-list');
+            locList.innerHTML = state.locations.length > 0 
+                ? state.locations.map(loc => `
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-900/90 border border-zinc-800">
+                        <span class="text-sm text-zinc-200"><i class="fa-solid fa-location-dot text-cyan-400 mr-2"></i>${loc.label}</span>
+                        <button onclick="deleteLocation('${loc.id}')" class="text-red-400 hover:text-red-300 text-xs font-semibold px-2.5 py-1 rounded-lg bg-red-500/10">
+                            Retirer
+                        </button>
+                    </div>
+                `).join('')
+                : `<p class="text-xs text-zinc-500">Aucun lieu de retrait enregistré.</p>`;
+
+            // 3. Demandes de codes de vérification
+            const pendingUsers = state.users.filter(u => !u.verified);
+            const tabBadge = document.getElementById('tab-verif-badge');
+            if (pendingUsers.length > 0) {
+                tabBadge.textContent = pendingUsers.length;
+                tabBadge.classList.remove('hidden');
+            } else {
+                tabBadge.classList.add('hidden');
+            }
+
+            const verifList = document.getElementById('admin-verifications-list');
+            verifList.innerHTML = pendingUsers.length > 0
+                ? pendingUsers.map(u => `
+                    <div class="p-4 rounded-xl bg-amber-500/5 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <p class="text-sm font-bold text-white">${u.email} <span class="text-xs font-normal text-zinc-400">a besoin d’un ccode de vérification</span></p>
+                            <p class="text-xs text-zinc-400 mt-0.5">Demande enregistrée le : ${u.createdAt || 'Aujourd\'hui'}</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="px-3 py-1.5 rounded-lg bg-zinc-950 border border-amber-500/40 font-mono text-base font-bold text-amber-400 tracking-widest">
+                                ${u.verificationCode}
+                            </span>
+                            <a href="mailto:${u.email}?subject=${encodeURIComponent('Votre code de vérification PuffZone')}&body=${encodeURIComponent('Bonjour, voici votre code de vérification : ' + u.verificationCode)}" class="px-3 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold">
+                                <i class="fa-solid fa-reply mr-1"></i>Envoyer par mail
+                            </a>
+                            <button onclick="adminForceVerifyUser('${u.email}')" class="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">
+                                Activer directement
+                            </button>
+                        </div>
+                    </div>
+                `).join('')
+                : `<p class="text-xs text-zinc-500">Aucune demande de code en attente.</p>`;
+
+            // 4. Liste complète des comptes sauvegardés
+            const usersList = document.getElementById('admin-users-list');
+            usersList.innerHTML = state.users.map(u => `
+                <div class="flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
+                    <div>
+                        <p class="text-sm font-bold text-white">${u.email} ${u.email === ADMIN_EMAIL ? '<span class="ml-2 text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">ADMIN</span>' : ''}</p>
+                        <p class="text-xs text-zinc-500">Créé : ${u.createdAt || 'Initial'}</p>
+                    </div>
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-lg ${u.verified ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
+                        ${u.verified ? 'Vérifié ✓' : 'En attente de code'}
+                    </span>
+                </div>
+            `).join('');
+
+            // 5. Commandes clients
+            const ordersList = document.getElementById('admin-orders-list');
+            ordersList.innerHTML = state.orders.length > 0
+                ? state.orders.map(o => `
+                    <div class="p-4 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-2">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-xs font-bold text-violet-400">${o.id} • ${o.date}</span>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                                <i class="fa-solid fa-location-dot mr-1"></i>${o.location}
+                            </span>
+                        </div>
+                        <p class="text-xs text-zinc-300">Client : <strong>${o.customer}</strong></p>
+                        <div class="text-xs text-zinc-400 border-t border-zinc-800 pt-2">
+                            ${o.items.map(i => `<div>• ${i.qty}x ${i.name} (${(i.price * i.qty).toFixed(2)} €)</div>`).join('')}
+                        </div>
+                        <div class="text-right text-sm font-bold text-white">Total : ${Number(o.total).toFixed(2)} €</div>
+                    </div>
+                `).join('')
+                : `<p class="text-xs text-zinc-500">Aucune commande enregistrée pour le moment.</p>`;
+        }
+
+        // Lancement au chargement de la page
+        window.addEventListener('DOMContentLoaded', () => {
+            initDatabase();
+        });
+    </script>
+</body>
+</html>
+```
